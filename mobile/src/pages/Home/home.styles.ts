@@ -111,4 +111,27 @@ export const styles = StyleSheet.create({
   cardsContainer: {
     justifyContent: 'space-between',
   },
+
+  bottomNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingVertical: 14,
+    backgroundColor: '#111827',
+    borderTopWidth: 1,
+    borderTopColor: '#1F2937',
+},
+
+navButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+},
+
+navText: {
+    color: '#fff',
+    marginTop: 4,
+    fontSize: 12,
+    fontWeight: '600',
+},
+
 })

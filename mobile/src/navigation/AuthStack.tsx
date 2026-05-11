@@ -3,6 +3,7 @@ import SignInScreen from '../pages/Login/SignInScreen'
 import SignUpScreen from '../pages/Login/SignUpScreen'
 import SuccessScreen from '../pages/Login/SuccessScreen'
 import { HomeScreen } from '../pages/Home/HomeScreen'
+import { ProfileScreen } from '../pages/Profile/ProfileScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -13,6 +14,7 @@ export default function AuthStack() {
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="Success" component={SuccessScreen} />
       <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
     </Stack.Navigator>
   )
 }
