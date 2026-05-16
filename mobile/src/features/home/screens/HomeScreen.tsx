@@ -18,9 +18,9 @@ import { styles } from './home.styles'
 
 import { Challenge } from './home.types'
 
-import { ChallengeCard } from './ChallengeCard'
+import { ChallengeCard } from '../components/ChallengeCard'
 
-import { getChallenges } from '../../services/home.service'
+import { getChallenges } from '../../../shared/services/home.service'
 
 export function HomeScreen({ navigation }: any) {
   const [challenges, setChallenges] =
