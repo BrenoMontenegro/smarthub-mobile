@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native'
-import AuthStack from './src/navigation/AuthStack'
+import AuthStack from './src/app/navigation/AuthStack'
 
 export default function App() {
   return (
