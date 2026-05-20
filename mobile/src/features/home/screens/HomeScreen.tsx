@@ -125,6 +125,21 @@ export function HomeScreen({ navigation }: any) {
 
         <TouchableOpacity
           style={styles.navButton}
+          onPress={() => navigation.navigate('CameraExercises')}
+        >
+          <Ionicons
+            name="camera"
+            size={28}
+            color="#fff"
+          />
+          
+          <Text style={styles.navText}>
+            Câmera
+          </Text>
+      </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.navButton}
           onPress={() => navigation.navigate('Profile')}
         >
           <Ionicons

@@ -4,6 +4,7 @@ import SignUpScreen from '../../features/auth/screens/SignUpScreen'
 import SuccessScreen from '../../features/auth/screens/SuccessScreen'
 import { HomeScreen } from '../../features/home/screens/HomeScreen'
 import { ProfileScreen } from '../../features/profile/screens/ProfileScreen'
+import { CameraExerciseScreen } from '../../features/exercises/screens/CameraExerciseScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -15,6 +16,7 @@ export default function AuthStack() {
       <Stack.Screen name="Success" component={SuccessScreen} />
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="CameraExercises" component={CameraExerciseScreen} />
     </Stack.Navigator>
   )
 }
