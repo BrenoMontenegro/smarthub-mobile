@@ -9,17 +9,20 @@ import {
   SafeAreaView,
   Image,
   FlatList,
+  TouchableOpacity,
 } from 'react-native'
+
+import { Ionicons } from '@expo/vector-icons'
 
 import { styles } from './home.styles'
 
 import { Challenge } from './home.types'
 
-import { ChallengeCard } from './ChallengeCard'
+import { ChallengeCard } from '../components/ChallengeCard'
 
-import { getChallenges } from '../../services/home.service'
+import { getChallenges } from '../../../shared/services/home.service'
 
-export function HomeScreen() {
+export function HomeScreen({ navigation }: any) {
   const [challenges, setChallenges] =
     useState<Challenge[]>([])
 
@@ -102,6 +105,53 @@ export function HomeScreen() {
             />
           )}
         />
+      </View>
+
+      <View style={styles.bottomNav}>
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate('Home')}
+        >
+          <Ionicons
+            name="home"
+            size={28}
+            color="#fff"
+          />
+
+          <Text style={styles.navText}>
+            Home
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate('CameraExercises')}
+        >
+          <Ionicons
+            name="camera"
+            size={28}
+            color="#fff"
+          />
+          
+          <Text style={styles.navText}>
+            Câmera
+          </Text>
+      </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.navButton}
+          onPress={() => navigation.navigate('Profile')}
+        >
+          <Ionicons
+            name="person"
+            size={28}
+            color="#fff"
+          />
+
+          <Text style={styles.navText}>
+            Perfil
+          </Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   )

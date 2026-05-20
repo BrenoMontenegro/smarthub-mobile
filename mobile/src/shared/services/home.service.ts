@@ -1,4 +1,4 @@
-import { challengesMock } from '../pages/Home/home.mock'
+import { challengesMock } from '../../features/home/screens/home.mock'
 
 export async function getChallenges() {
   return new Promise((resolve) => {
