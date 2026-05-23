@@ -16,6 +16,7 @@ interface Props {
   difficulty: string
   icon: any
   color: string
+  onPress?: () => void
 }
 
 export function ChallengeCard({
@@ -25,9 +26,14 @@ export function ChallengeCard({
   difficulty,
   icon,
   color,
+  onPress,
 }: Props) {
   return (
-    <TouchableOpacity style={styles.card}>
+    <TouchableOpacity 
+      style={styles.card}
+      activeOpacity={0.8}
+      onPress={onPress}
+    >
       <View
         style={[
           styles.iconContainer,
@@ -66,7 +72,6 @@ export function ChallengeCard({
 
 const styles = StyleSheet.create({
   card: {
-    width: '47%',
     backgroundColor: '#FFF',
     borderRadius: 20,
     padding: 16,
