@@ -95,14 +95,25 @@ export function HomeScreen({ navigation }: any) {
           columnWrapperStyle={styles.cardsContainer}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <ChallengeCard
-              title={item.title}
-              description={item.description}
-              xp={item.xp}
-              difficulty={item.difficulty}
-              icon={item.icon}
-              color={item.color}
-            />
+            <View
+              style={{
+                width: '48%',
+              }}
+            >
+              <ChallengeCard
+                title={item.title}
+                description={item.description}
+                xp={item.xp}
+                difficulty={item.difficulty}
+                icon={item.icon}
+                color={item.color}
+                onPress={() =>
+                  navigation.navigate('Quiz', {
+                    challenge: item,
+                  })
+                }
+              />
+            </View>
           )}
         />
       </View>
