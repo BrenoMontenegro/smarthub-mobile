@@ -107,11 +107,15 @@ export function HomeScreen({ navigation }: any) {
                 difficulty={item.difficulty}
                 icon={item.icon}
                 color={item.color}
-                onPress={() =>
-                  navigation.navigate('Quiz', {
-                    challenge: item,
-                  })
-                }
+                onPress={() => {
+                  if (item.title === 'Complete código') {
+                    navigation.navigate('CompleteCode')
+                  } else {
+                    navigation.navigate('Quiz', {
+                      challenge: item,
+                    })
+                  }
+                }}
               />
             </View>
           )}
