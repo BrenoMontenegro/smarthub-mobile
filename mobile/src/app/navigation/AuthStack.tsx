@@ -3,6 +3,7 @@ import SignInScreen from '../../features/auth/screens/SignInScreen'
 import SignUpScreen from '../../features/auth/screens/SignUpScreen'
 import SuccessScreen from '../../features/auth/screens/SuccessScreen'
 import { HomeScreen } from '../../features/home/screens/HomeScreen'
+import { ExerciseConfigScreen} from '../../features/config/screens/ExerciseConfigScreen'
 import { QuizScreen } from '../../features/quiz/screens/QuizScreen'
 import { CompleteCodeScreen } from '../../features/code-complete/screens/CompleteCodeScreen'
 import { ProfileScreen } from '../../features/profile/screens/ProfileScreen'
@@ -17,6 +18,7 @@ export default function AuthStack() {
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="Success" component={SuccessScreen} />
       <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="ExerciseConfig" component={ExerciseConfigScreen} />
       <Stack.Screen name="Quiz" component={QuizScreen} />
       <Stack.Screen name="CompleteCode" component={CompleteCodeScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
