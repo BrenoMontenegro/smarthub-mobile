@@ -16,6 +16,7 @@ interface Props {
   difficulty: string
   icon: any
   color: string
+  type: string
   onPress?: () => void
 }
 

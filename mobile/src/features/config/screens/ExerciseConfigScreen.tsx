@@ -18,7 +18,7 @@ export function ExerciseConfigScreen({
   navigation,
   route,
 }: any) {
-  const { activityType } = route.params
+  const { activityType, challenge } = route.params
 
   const [selectedLanguage, setSelectedLanguage] = useState<any>(null)
 
@@ -31,16 +31,18 @@ export function ExerciseConfigScreen({
     }
 
     if (activityType === 'quiz') {
-      navigation.navigate('QuizScreen', {
+      navigation.navigate('Quiz', {
         language: selectedLanguage,
         difficulty: selectedDifficulty,
+        challenge,
       })
     }
 
     if (activityType === 'code-complete') {
-      navigation.navigate('CompleteCodeScreen', {
+      navigation.navigate('CompleteCode', {
         language: selectedLanguage,
         difficulty: selectedDifficulty,
+        challenge,
       })
     }
   }

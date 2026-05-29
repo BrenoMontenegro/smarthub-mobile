@@ -9,6 +9,7 @@ export const challengesMock: Challenge[] = [
     difficulty: '6 atividades',
     icon: 'help-circle-outline',
     color: '#ECE9F8',
+    type: 'quiz',
   },
 
   {
@@ -19,6 +20,7 @@ export const challengesMock: Challenge[] = [
     difficulty: '10 atividades',
     icon: 'code-slash-outline',
     color: '#E7F4EE',
+    type: 'code-complete',
   },
 
   {
@@ -29,6 +31,7 @@ export const challengesMock: Challenge[] = [
     difficulty: '10 atividades',
     icon: 'terminal-outline',
     color: '#FFF4E5',
+    type: 'acertar-output'
   },
 
   {
@@ -39,5 +42,6 @@ export const challengesMock: Challenge[] = [
     difficulty: '14 atividades',
     icon: 'swap-vertical-outline',
     color: '#FCE8E8',
+    type: 'codigo-embaralhado'
   },
 ]
