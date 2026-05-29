@@ -6,9 +6,10 @@ export const challengesMock: Challenge[] = [
     title: 'Quiz Interativo',
     description: 'Questões de múltipla escolha por nível',
     xp: 120,
-    difficulty: 'Fácil',
+    difficulty: '6 atividades',
     icon: 'help-circle-outline',
     color: '#ECE9F8',
+    type: 'quiz',
   },
 
   {
@@ -16,9 +17,10 @@ export const challengesMock: Challenge[] = [
     title: 'Complete código',
     description: 'Preencha os espaços em branco',
     xp: 180,
-    difficulty: 'Médio',
+    difficulty: '10 atividades',
     icon: 'code-slash-outline',
     color: '#E7F4EE',
+    type: 'code-complete',
   },
 
   {
@@ -26,9 +28,10 @@ export const challengesMock: Challenge[] = [
     title: 'Acertar output',
     description: 'Leia o código e descubra o resultado',
     xp: 240,
-    difficulty: 'Difícil',
+    difficulty: '10 atividades',
     icon: 'terminal-outline',
     color: '#FFF4E5',
+    type: 'acertar-output'
   },
 
   {
@@ -36,8 +39,9 @@ export const challengesMock: Challenge[] = [
     title: 'Código embaralhado',
     description: 'Organize as linhas corretamente',
     xp: 200,
-    difficulty: 'Médio',
+    difficulty: '14 atividades',
     icon: 'swap-vertical-outline',
     color: '#FCE8E8',
+    type: 'codigo-embaralhado'
   },
 ]
