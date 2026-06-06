@@ -254,3 +254,11 @@ O projeto busca:
 # 📄 Licença
 
 Este projeto possui finalidade educacional e acadêmica.
+
+---
+
+# Link para o Figma
+
+Nesta seção, está disponível o link do design inicial pensado e construído na plataforma do Figma. Acesse o link abaixo:
+
+Figma: https://www.figma.com/design/9iclWjHgcIa4MdzScwuOtj/SmartHub---app-project?node-id=0-1&t=THdj5dfVxpA2QyCK-1
