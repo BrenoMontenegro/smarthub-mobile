@@ -9,6 +9,7 @@ import { CompleteCodeScreen } from '../../features/code-complete/screens/Complet
 import { ProfileScreen } from '../../features/profile/screens/ProfileScreen'
 import { CameraExerciseScreen } from '../../features/camera/screens/CameraExerciseScreen'
 import { OutputScreen } from '../../features/Output/screens/OutputScreen'
+import { SortCodeScreen } from '../../features/sort-code/screens/SortCodeScreen'
 const Stack = createNativeStackNavigator()
 
 export default function AuthStack() {
@@ -24,6 +25,7 @@ export default function AuthStack() {
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="CameraExercises" component={CameraExerciseScreen} />
       <Stack.Screen name="Output" component={OutputScreen} />
+      <Stack.Screen name="SortCode" component={SortCodeScreen} />
     </Stack.Navigator>
   )
 }

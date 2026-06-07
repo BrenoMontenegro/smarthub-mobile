@@ -53,6 +53,14 @@ export function ExerciseConfigScreen({
         challenge,
       })
     }
+
+    if (activityType === 'codigo-embaralhado') {
+      navigation.navigate('SortCode', {
+        language: selectedLanguage,
+        difficulty: selectedDifficulty,
+        challenge,
+      })
+    }
   }
 
   return (
