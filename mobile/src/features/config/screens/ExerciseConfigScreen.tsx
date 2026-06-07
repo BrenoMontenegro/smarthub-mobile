@@ -45,6 +45,14 @@ export function ExerciseConfigScreen({
         challenge,
       })
     }
+
+    if (activityType === 'acertar-output') {
+      navigation.navigate('Output', {
+        language: selectedLanguage,
+        difficulty: selectedDifficulty,
+        challenge,
+      })
+    }
   }
 
   return (
