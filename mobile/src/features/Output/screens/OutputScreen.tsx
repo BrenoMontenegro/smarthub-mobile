@@ -13,18 +13,52 @@ export function OutputScreen({ navigation }: any) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
+  const [score, setScore] = useState(0)
 
   const question = mockOutputQuestions[currentIndex]
 
   function handleSelectOption(option: string) {
+    const correct = option === question.correctAnswer
     setSelectedOption(option)
-    setIsCorrect(option === question.correctAnswer)
+    setIsCorrect(correct)
+    if (correct) setScore(prev => prev + 1)
   }
 
   function handleNext() {
     setSelectedOption(null)
     setIsCorrect(null)
     setCurrentIndex(prev => prev + 1)
+  }
+
+  if (!question) {
+    const total = mockOutputQuestions.length
+    const emoji = score === total ? '🎉' : score >= total / 2 ? '👍' : '💪'
+    const message = score === total
+      ? 'Perfeito! Você acertou tudo!'
+      : score >= total / 2
+      ? 'Bom trabalho! Continue praticando.'
+      : 'Continue tentando, você vai melhorar!'
+
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5F5F5', padding: 32 }}>
+        <Text style={{ fontSize: 48, marginBottom: 16 }}>{emoji}</Text>
+        <Text style={{ fontSize: 24, fontWeight: '700', color: '#111', marginBottom: 8 }}>
+          Resultado
+        </Text>
+        <Text style={{ fontSize: 40, fontWeight: '700', color: '#6C5CE7', marginBottom: 8 }}>
+          {score}/{total}
+        </Text>
+        <Text style={{ fontSize: 16, color: '#666', textAlign: 'center', marginBottom: 32 }}>
+          {message}
+        </Text>
+        <TouchableOpacity
+          style={{ backgroundColor: '#6C5CE7', paddingVertical: 14, paddingHorizontal: 32, borderRadius: 12 }}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={{ color: '#FFF', fontWeight: '700', fontSize: 16 }}>Voltar</Text>
+        </TouchableOpacity>
+      </View>
+    )
   }
 
   return (
