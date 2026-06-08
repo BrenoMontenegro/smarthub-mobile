@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   View,
   Text,
@@ -9,13 +9,43 @@ import { Ionicons } from '@expo/vector-icons'
 import { mockOutputQuestions } from '../data/mockOutput'
 import { styles } from './output.styles'
 
+const TIMER_SECONDS = 30
+
 export function OutputScreen({ navigation }: any) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
   const [score, setScore] = useState(0)
+  const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS)
+  const timerRef = useRef<any>(null)
 
   const question = mockOutputQuestions[currentIndex]
+
+  useEffect(() => {
+    if (selectedOption !== null) return
+
+    setTimeLeft(TIMER_SECONDS)
+
+    timerRef.current = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current)
+          setIsCorrect(false)
+          setSelectedOption('__timeout__')
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(timerRef.current)
+  }, [currentIndex])
+
+  useEffect(() => {
+    if (selectedOption !== null) {
+      clearInterval(timerRef.current)
+    }
+  }, [selectedOption])
 
   function handleSelectOption(option: string) {
     const correct = option === question.correctAnswer
@@ -68,6 +98,12 @@ export function OutputScreen({ navigation }: any) {
           <Ionicons name="chevron-back" size={24} color="#6C5CE7" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Acertar o Output</Text>
+        <Text style={[
+          styles.timer,
+          timeLeft <= 10 && styles.timerWarning
+        ]}>
+          {timeLeft}s
+        </Text>
       </View>
 
       <Text style={styles.progressText}>
@@ -115,7 +151,9 @@ export function OutputScreen({ navigation }: any) {
       {isCorrect !== null && (
         <View style={isCorrect ? styles.feedbackCorrect : styles.feedbackWrong}>
           <Text style={isCorrect ? styles.feedbackCorrectTitle : styles.feedbackWrongTitle}>
-            {isCorrect ? '✅ Correto!' : '❌ Quase lá!'}
+            {selectedOption === '__timeout__'
+              ? '⏰ Tempo esgotado!'
+              : isCorrect ? '✅ Correto!' : '❌ Quase lá!'}
           </Text>
           <Text style={styles.feedbackText}>
             {question.explanation}

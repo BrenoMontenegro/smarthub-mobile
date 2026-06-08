@@ -152,4 +152,15 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#111',
   },
+
+  timer: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#6C5CE7',
+    marginLeft: 'auto',
+  },
+
+  timerWarning: {
+    color: '#D63031',
+  },
 })
