@@ -1,9 +1,7 @@
-import { challengesMock } from '../../features/home/screens/home.mock'
+import api from '../config/api'
+import { Challenge } from '../../features/home/screens/home.types'
 
-export async function getChallenges() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(challengesMock)
-    }, 600)
-  })
+export async function getChallenges(): Promise<Challenge[]> {
+  const { data } = await api.get('/challenges')
+  return data
 }
