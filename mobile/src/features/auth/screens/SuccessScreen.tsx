@@ -8,7 +8,7 @@ export default function SuccessScreen({ navigation }: any) {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.navigate('SignIn')
+      navigation.navigate('Home')
     }, 4000)
     return () => clearTimeout(timer)
   }, [])
@@ -32,9 +32,9 @@ export default function SuccessScreen({ navigation }: any) {
 
         <TouchableOpacity 
           style={styles.button} 
-          onPress={() => navigation.navigate('SignIn')}
+          onPress={() => navigation.navigate('Home')}
         >
-          <Text style={styles.buttonText}>Ir para o Login</Text>
+          <Text style={styles.buttonText}>Ir para o app</Text>
         </TouchableOpacity>
 
       </View>

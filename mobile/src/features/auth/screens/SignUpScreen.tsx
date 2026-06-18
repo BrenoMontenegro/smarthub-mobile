@@ -1,38 +1,71 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
+import { signUp, getAuthErrorMessage } from '../../../shared/services/auth.service'
 
 export default function SignUpScreen({ navigation }: any) {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  async function handleSignUp() {
+    if (!username || !email || !password || !confirmPassword) {
+      setError('Preencha todos os campos.')
+      return
+    }
+    if (username.length < 3) {
+      setError('Username deve ter no mínimo 3 caracteres.')
+      return
+    }
+    if (password.length < 6) {
+      setError('Senha deve ter no mínimo 6 caracteres.')
+      return
+    }
+    if (password !== confirmPassword) {
+      setError('As senhas não coincidem.')
+      return
+    }
+
+    setLoading(true)
+    setError('')
+    try {
+      await signUp(username.trim(), email.trim().toLowerCase(), password)
+      navigation.navigate('Success')
+    } catch (err) {
+      setError(getAuthErrorMessage(err, 'Não foi possível criar a conta. Tente novamente.'))
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <View style={styles.container}>
       
       <Text style={styles.title}>Sign Up</Text>
 
-      {/* Username */}
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Username"
           style={styles.input}
           onChangeText={setUsername}
+          autoCapitalize="none"
         />
       </View>
 
-      {/* Email */}
       <View style={styles.inputContainer}>
         <Ionicons name="person-outline" size={20} color="#aaa" />
         <TextInput
           placeholder="Email"
           style={styles.input}
           onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
         />
       </View>
 
-      {/* Password */}
       <View style={styles.inputContainer}>
         <Ionicons name="key-outline" size={20} color="#aaa" />
         <TextInput
@@ -43,7 +76,6 @@ export default function SignUpScreen({ navigation }: any) {
         />
       </View>
 
-      {/* Confirm Password */}
       <View style={styles.inputContainer}>
         <Ionicons name="key-outline" size={20} color="#aaa" />
         <TextInput
@@ -54,7 +86,6 @@ export default function SignUpScreen({ navigation }: any) {
         />
       </View>
 
-      {/* Terms */}
       <View style={styles.terms}>
         <View style={styles.checkbox} />
         <Text style={styles.termsText}>
@@ -62,17 +93,21 @@ export default function SignUpScreen({ navigation }: any) {
         </Text>
       </View>
 
-      {/* Button */}
-      <TouchableOpacity style={styles.button}
-        onPress={() => navigation.navigate('Success')}>
-        <Text style={styles.buttonText}>Entrar</Text>
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleSignUp}
+        disabled={loading}
+      >
+        {loading
+          ? <ActivityIndicator color="#333" />
+          : <Text style={styles.buttonText}>Cadastrar</Text>}
       </TouchableOpacity>
 
-      {/* Divider */}
       <Text style={styles.or}>- OU -</Text>
       <Text style={styles.socialText}>Entre usando</Text>
 
-      {/* Social */}
       <View style={styles.socialContainer}>
         <View style={styles.socialButton}>
           <Text style={{ fontWeight: 'bold' }}>f</Text>
@@ -83,7 +118,6 @@ export default function SignUpScreen({ navigation }: any) {
         </View>
       </View>
 
-      {/* Footer */}
       <Text style={styles.footer}>
         Já possui conta?{' '}
         <Text
@@ -146,6 +180,13 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#555',
     flex: 1
+  },
+
+  errorText: {
+    color: '#e74c3c',
+    textAlign: 'center',
+    marginBottom: 10,
+    fontSize: 13
   },
 
   button: {
