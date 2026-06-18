@@ -7,6 +7,11 @@ import { ExerciseConfigScreen} from '../../features/config/screens/ExerciseConfi
 import { QuizScreen } from '../../features/quiz/screens/QuizScreen'
 import { CompleteCodeScreen } from '../../features/code-complete/screens/CompleteCodeScreen'
 import { ProfileScreen } from '../../features/profile/screens/ProfileScreen'
+import { EditProfileScreen } from '../../features/profile/screens/EditProfileScreen'
+import { LanguageSettingsScreen } from '../../features/profile/screens/LanguageSettingsScreen'
+import { SecurityScreen } from '../../features/profile/screens/SecurityScreen'
+import { ThemeSettingsScreen } from '../../features/profile/screens/ThemeSettingsScreen'
+import { InfoScreen } from '../../features/profile/screens/InfoScreen'
 import { CameraExerciseScreen } from '../../features/camera/screens/CameraExerciseScreen'
 import { OutputScreen } from '../../features/Output/screens/OutputScreen'
 import { SortCodeScreen } from '../../features/sort-code/screens/SortCodeScreen'
@@ -23,6 +28,11 @@ export default function AuthStack() {
       <Stack.Screen name="Quiz" component={QuizScreen} />
       <Stack.Screen name="CompleteCode" component={CompleteCodeScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+      <Stack.Screen name="LanguageSettings" component={LanguageSettingsScreen} />
+      <Stack.Screen name="Security" component={SecurityScreen} />
+      <Stack.Screen name="ThemeSettings" component={ThemeSettingsScreen} />
+      <Stack.Screen name="Info" component={InfoScreen} />
       <Stack.Screen name="CameraExercises" component={CameraExerciseScreen} />
       <Stack.Screen name="Output" component={OutputScreen} />
       <Stack.Screen name="SortCode" component={SortCodeScreen} />

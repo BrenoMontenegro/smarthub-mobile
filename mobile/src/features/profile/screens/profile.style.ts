@@ -3,85 +3,77 @@ import { StyleSheet } from 'react-native'
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F4F4',
+  },
+
+  scrollContent: {
+    paddingBottom: 16,
   },
 
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 16,
+    paddingBottom: 8,
   },
 
-  headerIcons: {
-    flexDirection: 'row',
-    gap: 18,
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: '700',
   },
 
   profileContainer: {
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 16,
     marginBottom: 25,
   },
 
-  avatarWrapper: {
-    position: 'relative',
-  },
-
-  avatar: {
-    width: 110,
-    height: 110,
-    borderRadius: 55,
-  },
-
-  editButton: {
-    position: 'absolute',
-    right: 0,
-    bottom: 5,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: '#fff',
+  avatarInitial: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 4,
   },
 
   username: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#000',
     marginTop: 18,
   },
 
   email: {
     fontSize: 13,
-    color: '#666',
     marginTop: 6,
   },
 
   card: {
-    backgroundColor: '#fff',
     marginHorizontal: 24,
     marginBottom: 20,
     borderRadius: 18,
-    paddingVertical: 8,
-    paddingHorizontal: 18,
+    paddingVertical: 4,
+    paddingHorizontal: 4,
     elevation: 3,
   },
 
   option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingVertical: 14,
+    paddingHorizontal: 14,
+  },
+
+  optionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
   },
 
   optionText: {
     fontSize: 15,
-    color: '#222',
   },
 
   logoutText: {
-    color: '#D11A2A',
     fontWeight: '600',
   },
 })
