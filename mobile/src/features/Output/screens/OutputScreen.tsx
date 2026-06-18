@@ -4,14 +4,21 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-import { mockOutputQuestions } from '../data/mockOutput'
 import { styles } from './output.styles'
+import { OutputQuestion } from '../types/output.types'
+import { getOutputQuestions } from '../services/output.service'
 
 const TIMER_SECONDS = 30
 
-export function OutputScreen({ navigation }: any) {
+export function OutputScreen({ navigation, route }: any) {
+  const { language, difficulty } = route?.params ?? {}
+
+  const [questions, setQuestions] = useState<OutputQuestion[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
@@ -19,10 +26,23 @@ export function OutputScreen({ navigation }: any) {
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS)
   const timerRef = useRef<any>(null)
 
-  const question = mockOutputQuestions[currentIndex]
+  useEffect(() => {
+    loadQuestions()
+  }, [])
+
+  async function loadQuestions() {
+    try {
+      const data = await getOutputQuestions(language?.name ?? '', difficulty ?? '')
+      setQuestions(data)
+    } catch {
+      setError('Não foi possível carregar as questões.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    if (selectedOption !== null) return
+    if (loading || questions.length === 0 || selectedOption !== null) return
 
     setTimeLeft(TIMER_SECONDS)
 
@@ -39,7 +59,7 @@ export function OutputScreen({ navigation }: any) {
     }, 1000)
 
     return () => clearInterval(timerRef.current)
-  }, [currentIndex])
+  }, [currentIndex, loading])
 
   useEffect(() => {
     if (selectedOption !== null) {
@@ -48,6 +68,7 @@ export function OutputScreen({ navigation }: any) {
   }, [selectedOption])
 
   function handleSelectOption(option: string) {
+    const question = questions[currentIndex]
     const correct = option === question.correctAnswer
     setSelectedOption(option)
     setIsCorrect(correct)
@@ -60,9 +81,32 @@ export function OutputScreen({ navigation }: any) {
     setCurrentIndex(prev => prev + 1)
   }
 
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#6C5CE7" />
+      </View>
+    )
+  }
+
+  if (error) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 }}>
+        <Text style={{ fontSize: 16, color: '#666', textAlign: 'center', marginBottom: 24 }}>{error}</Text>
+        <TouchableOpacity
+          style={{ backgroundColor: '#6C5CE7', paddingVertical: 14, paddingHorizontal: 32, borderRadius: 12 }}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={{ color: '#FFF', fontWeight: '700' }}>Voltar</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  const question = questions[currentIndex]
+
   if (!question) {
-    const total = mockOutputQuestions.length
-    const emoji = score === total ? '🎉' : score >= total / 2 ? '👍' : '💪'
+    const total = questions.length
     const message = score === total
       ? 'Perfeito! Você acertou tudo!'
       : score >= total / 2
@@ -71,16 +115,10 @@ export function OutputScreen({ navigation }: any) {
 
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5F5F5', padding: 32 }}>
-        <Text style={{ fontSize: 48, marginBottom: 16 }}>{emoji}</Text>
-        <Text style={{ fontSize: 24, fontWeight: '700', color: '#111', marginBottom: 8 }}>
-          Resultado
-        </Text>
-        <Text style={{ fontSize: 40, fontWeight: '700', color: '#6C5CE7', marginBottom: 8 }}>
-          {score}/{total}
-        </Text>
-        <Text style={{ fontSize: 16, color: '#666', textAlign: 'center', marginBottom: 32 }}>
-          {message}
-        </Text>
+        <Ionicons name="trophy" size={64} color="#6C5CE7" style={{ marginBottom: 16 }} />
+        <Text style={{ fontSize: 24, fontWeight: '700', color: '#111', marginBottom: 8 }}>Resultado</Text>
+        <Text style={{ fontSize: 40, fontWeight: '700', color: '#6C5CE7', marginBottom: 8 }}>{score}/{total}</Text>
+        <Text style={{ fontSize: 16, color: '#666', textAlign: 'center', marginBottom: 32 }}>{message}</Text>
         <TouchableOpacity
           style={{ backgroundColor: '#6C5CE7', paddingVertical: 14, paddingHorizontal: 32, borderRadius: 12 }}
           onPress={() => navigation.goBack()}
@@ -98,22 +136,19 @@ export function OutputScreen({ navigation }: any) {
           <Ionicons name="chevron-back" size={24} color="#6C5CE7" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Acertar o Output</Text>
-        <Text style={[
-          styles.timer,
-          timeLeft <= 10 && styles.timerWarning
-        ]}>
+        <Text style={[styles.timer, timeLeft <= 10 && styles.timerWarning]}>
           {timeLeft}s
         </Text>
       </View>
 
       <Text style={styles.progressText}>
-        Questão {currentIndex + 1} de {mockOutputQuestions.length}
+        Questão {currentIndex + 1} de {questions.length}
       </Text>
 
       <View style={styles.progressBarBackground}>
         <View style={[
           styles.progressBarFill,
-          { width: `${((currentIndex + 1) / mockOutputQuestions.length) * 100}%` }
+          { width: `${((currentIndex + 1) / questions.length) * 100}%` }
         ]} />
       </View>
 
@@ -150,17 +185,28 @@ export function OutputScreen({ navigation }: any) {
 
       {isCorrect !== null && (
         <View style={isCorrect ? styles.feedbackCorrect : styles.feedbackWrong}>
-          <Text style={isCorrect ? styles.feedbackCorrectTitle : styles.feedbackWrongTitle}>
-            {selectedOption === '__timeout__'
-              ? '⏰ Tempo esgotado!'
-              : isCorrect ? '✅ Correto!' : '❌ Quase lá!'}
-          </Text>
-          <Text style={styles.feedbackText}>
-            {question.explanation}
-          </Text>
-
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+            <Ionicons
+              name={
+                selectedOption === '__timeout__'
+                  ? 'timer-outline'
+                  : isCorrect
+                  ? 'checkmark-circle'
+                  : 'close-circle'
+              }
+              size={24}
+              color={selectedOption === '__timeout__' ? '#e67e22' : isCorrect ? '#27ae60' : '#e74c3c'}
+            />
+            <Text style={isCorrect ? styles.feedbackCorrectTitle : styles.feedbackWrongTitle}>
+              {selectedOption === '__timeout__'
+                ? 'Tempo esgotado!'
+                : isCorrect ? 'Correto!' : 'Quase lá!'}
+            </Text>
+          </View>
+          <Text style={styles.feedbackText}>{question.explanation}</Text>
           <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-            <Text style={styles.nextButtonText}>Próxima →</Text>
+            <Text style={styles.nextButtonText}>Próxima</Text>
+            <Ionicons name="arrow-forward" size={16} color="#1E1E1E" />
           </TouchableOpacity>
         </View>
       )}

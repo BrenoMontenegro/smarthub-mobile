@@ -81,7 +81,6 @@ export function CompleteCodeScreen({
         <Text style={styles.codeText}>
 {`function filtrarPares(lista) {
   return lista.filter(n =>
-    /* retorna true se o número for par */
     return n % 2 === __
   )
 }`}
@@ -120,17 +119,24 @@ export function CompleteCodeScreen({
               : styles.feedbackWrong
           }
         >
-          <Text
-            style={
-              isCorrect
-                ? styles.feedbackCorrectTitle
-                : styles.feedbackTitle
-            }
-          >
-            {isCorrect
-              ? '✅ Resposta correta!'
-              : '❌ Quase lá!'}
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+            <Ionicons
+              name={isCorrect ? 'checkmark-circle' : 'close-circle'}
+              size={24}
+              color={isCorrect ? '#27ae60' : '#e74c3c'}
+            />
+            <Text
+              style={
+                isCorrect
+                  ? styles.feedbackCorrectTitle
+                  : styles.feedbackTitle
+              }
+            >
+              {isCorrect
+                ? 'Resposta correta!'
+                : 'Quase lá!'}
+            </Text>
+          </View>
 
           <Text style={styles.feedbackText}>
             {isCorrect

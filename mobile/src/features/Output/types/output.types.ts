@@ -1,5 +1,5 @@
 export interface OutputQuestion {
-  id: number
+  id: string
   title: string
   code: string
   options: string[]

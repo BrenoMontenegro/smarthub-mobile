@@ -26,11 +26,13 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  avatar: {
+  avatarInitial: {
     width: 54,
     height: 54,
-    borderRadius: 999,
+    borderRadius: 27,
     marginRight: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   greeting: {
@@ -45,6 +47,9 @@ export const styles = StyleSheet.create({
   },
 
   streakBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
     backgroundColor: '#8477F7',
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -111,27 +116,4 @@ export const styles = StyleSheet.create({
   cardsContainer: {
     justifyContent: 'space-between',
   },
-
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingVertical: 14,
-    backgroundColor: '#111827',
-    borderTopWidth: 1,
-    borderTopColor: '#1F2937',
-},
-
-navButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-},
-
-navText: {
-    color: '#fff',
-    marginTop: 4,
-    fontSize: 12,
-    fontWeight: '600',
-},
-
 })

@@ -34,8 +34,7 @@ export const styles = StyleSheet.create({
     borderColor: '#6C63FF',
   },
 
-  icon: {
-    fontSize: 40,
+  iconContainer: {
     marginBottom: 10,
   },
 

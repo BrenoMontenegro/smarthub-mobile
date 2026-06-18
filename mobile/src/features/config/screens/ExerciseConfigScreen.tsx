@@ -7,6 +7,8 @@ import {
   ScrollView,
 } from 'react-native'
 
+import { Ionicons } from '@expo/vector-icons'
+
 import { styles } from './exerciseConfig.styles'
 
 import {
@@ -85,9 +87,9 @@ export function ExerciseConfigScreen({
               setSelectedLanguage(language)
             }
           >
-            <Text style={styles.icon}>
-              {language.icon}
-            </Text>
+            <View style={styles.iconContainer}>
+              <Ionicons name={language.icon} size={36} color="#6C63FF" />
+            </View>
 
             <Text style={styles.cardTitle}>
               {language.name}

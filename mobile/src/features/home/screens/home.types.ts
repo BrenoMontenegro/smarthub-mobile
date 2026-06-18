@@ -3,7 +3,7 @@ export interface Challenge {
   title: string
   description: string
   xp: number
-  difficulty: '6 atividades' | '10 atividades' | '14 atividades'
+  difficulty: string
   icon: string
   color: string
   type: string

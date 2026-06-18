@@ -1,92 +1,111 @@
-import React, {
-  useEffect,
-  useState,
-} from 'react'
+import React, { useCallback, useState } from 'react'
 
 import {
   View,
   Text,
-  SafeAreaView,
-  Image,
   FlatList,
   TouchableOpacity,
 } from 'react-native'
 
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useFocusEffect } from '@react-navigation/native'
 import { Ionicons } from '@expo/vector-icons'
 
 import { styles } from './home.styles'
-
 import { Challenge } from './home.types'
-
 import { ChallengeCard } from '../components/ChallengeCard'
-
 import { getChallenges } from '../../../shared/services/home.service'
+import { getUserProfile, UserProfile } from '../../../shared/services/user.service'
+import { BottomNav } from '../../../shared/components/BottomNav'
+import { useTheme } from '../../../shared/theme/ThemeContext'
+
+function calcXpProgress(totalXp: number, level: number) {
+  const xpCurrentLevel = (level - 1) ** 2 * 100
+  const xpNextLevel = level ** 2 * 100
+  const progress = (totalXp - xpCurrentLevel) / (xpNextLevel - xpCurrentLevel)
+  return {
+    xpProgress: totalXp - xpCurrentLevel,
+    xpNeeded: xpNextLevel - xpCurrentLevel,
+    xpNextLevel,
+    percent: Math.min(Math.max(progress, 0), 1),
+  }
+}
 
 export function HomeScreen({ navigation }: any) {
-  const [challenges, setChallenges] =
-    useState<Challenge[]>([])
+  const { colors } = useTheme()
+  const [challenges, setChallenges] = useState<Challenge[]>([])
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
+  const [error, setError] = useState('')
 
-  useEffect(() => {
-    loadChallenges()
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      loadData()
+    }, []),
+  )
 
-  async function loadChallenges() {
-    const data = (await getChallenges()) as Challenge[]
-
-    setChallenges(data)
+  async function loadData() {
+    try {
+      const [challengeData, profileData] = await Promise.all([
+        getChallenges(),
+        getUserProfile(),
+      ])
+      setChallenges(challengeData)
+      setUserProfile(profileData)
+      setError('')
+    } catch {
+      setError('Não foi possível carregar os dados.')
+    }
   }
 
+  const level = userProfile?.level ?? 1
+  const totalXp = userProfile?.totalXp ?? 0
+  const { xpProgress, xpNeeded, percent } = calcXpProgress(totalXp, level)
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top']}>
+      <View style={[styles.header, { backgroundColor: colors.headerBg }]}>
         <View style={styles.userRow}>
           <View style={styles.userInfo}>
-            <Image
-              source={{
-                uri: 'https://i.pravatar.cc/150?img=12',
-              }}
-              style={styles.avatar}
-            />
+            <View style={[styles.avatarInitial, { backgroundColor: colors.avatarBg }]}>
+              <Ionicons name="person" size={28} color={colors.avatarIcon} />
+            </View>
 
             <View>
-              <Text style={styles.greeting}>
-                Olá de volta,
-              </Text>
-
-              <Text style={styles.username}>
-                USUÁRIO
+              <Text style={[styles.greeting, { color: colors.headerSubtext }]}>Olá de volta,</Text>
+              <Text style={[styles.username, { color: colors.headerText }]}>
+                {userProfile?.username ?? '...'}
               </Text>
             </View>
           </View>
 
-          <View style={styles.streakBadge}>
+          <View style={[styles.streakBadge, { backgroundColor: colors.primaryLight }]}>
+            <Ionicons name="flame" size={14} color="#FFF" />
             <Text style={styles.streakText}>
-              🔥 7 dias
+              {userProfile?.streakDays ?? 0} dias
             </Text>
           </View>
         </View>
 
         <View style={styles.progressCard}>
           <View style={styles.progressTop}>
-            <Text style={styles.levelText}>
-              NÍVEL 8
-            </Text>
-
+            <Text style={styles.levelText}>NÍVEL {level}</Text>
             <Text style={styles.xpText}>
-              1240 / 2000 XP
+              {xpProgress} / {xpNeeded} XP
             </Text>
           </View>
 
           <View style={styles.progressBar}>
-            <View style={styles.progressFill} />
+            <View style={[styles.progressFill, { width: `${percent * 100}%` as any }]} />
           </View>
         </View>
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.sectionTitle}>
-          Módulos de treino
-        </Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Módulos de treino</Text>
+
+        {error ? (
+          <Text style={{ color: colors.error, textAlign: 'center', marginTop: 20 }}>{error}</Text>
+        ) : null}
 
         <FlatList
           data={challenges}
@@ -95,11 +114,7 @@ export function HomeScreen({ navigation }: any) {
           columnWrapperStyle={styles.cardsContainer}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <View
-              style={{
-                width: '48%',
-              }}
-            >
+            <View style={{ width: '48%' }}>
               <ChallengeCard
                 title={item.title}
                 description={item.description}
@@ -120,52 +135,7 @@ export function HomeScreen({ navigation }: any) {
         />
       </View>
 
-      <View style={styles.bottomNav}>
-        <TouchableOpacity
-          style={styles.navButton}
-          onPress={() => navigation.navigate('Home')}
-        >
-          <Ionicons
-            name="home"
-            size={28}
-            color="#fff"
-          />
-
-          <Text style={styles.navText}>
-            Home
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.navButton}
-          onPress={() => navigation.navigate('CameraExercises')}
-        >
-          <Ionicons
-            name="camera"
-            size={28}
-            color="#fff"
-          />
-          
-          <Text style={styles.navText}>
-            Câmera
-          </Text>
-      </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.navButton}
-          onPress={() => navigation.navigate('Profile')}
-        >
-          <Ionicons
-            name="person"
-            size={28}
-            color="#fff"
-          />
-
-          <Text style={styles.navText}>
-            Perfil
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <BottomNav navigation={navigation} currentRoute="Home" />
     </SafeAreaView>
   )
 }

@@ -1,5 +1,5 @@
 export interface SortCodeQuestion {
-  id: number
+  id: string
   objective: string
   correctOrder: string[]
   availableLines: string[]
