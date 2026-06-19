@@ -28,6 +28,7 @@ export async function getSortCodeQuestions(languageName: string, difficulty: str
       objective: q.objective,
       correctOrder,
       availableLines: shuffle(correctOrder),
+      explanation: q.explanation ?? undefined,
     }
   })
 }

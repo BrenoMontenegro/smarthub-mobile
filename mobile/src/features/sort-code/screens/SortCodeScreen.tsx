@@ -10,6 +10,9 @@ import { Ionicons } from '@expo/vector-icons'
 import { styles } from './sortCode.styles'
 import { SortCodeQuestion } from '../types/sortCode.types'
 import { getSortCodeQuestions } from '../services/sortCode.service'
+import { saveQuizResult } from '../../quiz/services/quiz.service'
+
+const XP_PER_CORRECT = 35
 
 export function SortCodeScreen({ navigation, route }: any) {
   const { language, difficulty } = route?.params ?? {}
@@ -23,6 +26,8 @@ export function SortCodeScreen({ navigation, route }: any) {
   const [isChecked, setIsChecked] = useState(false)
   const [isCorrect, setIsCorrect] = useState(false)
   const [score, setScore] = useState(0)
+  const [xpEarned, setXpEarned] = useState<number | null>(null)
+  const [savingResult, setSavingResult] = useState(false)
 
   useEffect(() => {
     loadQuestions()
@@ -96,26 +101,25 @@ export function SortCodeScreen({ navigation, route }: any) {
   const question = questions[currentIndex]
 
   if (!question) {
-    const total = questions.length
-    const message = score === total
-      ? 'Perfeito! Você acertou tudo!'
-      : score >= total / 2
-      ? 'Bom trabalho! Continue praticando.'
-      : 'Continue tentando, você vai melhorar!'
-
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5F5F5', padding: 32 }}>
-        <Ionicons name="trophy" size={64} color="#6C5CE7" style={{ marginBottom: 16 }} />
-        <Text style={{ fontSize: 24, fontWeight: '700', color: '#111', marginBottom: 8 }}>Resultado</Text>
-        <Text style={{ fontSize: 40, fontWeight: '700', color: '#6C5CE7', marginBottom: 8 }}>{score}/{total}</Text>
-        <Text style={{ fontSize: 16, color: '#666', textAlign: 'center', marginBottom: 32 }}>{message}</Text>
-        <TouchableOpacity
-          style={{ backgroundColor: '#6C5CE7', paddingVertical: 14, paddingHorizontal: 32, borderRadius: 12 }}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={{ color: '#FFF', fontWeight: '700', fontSize: 16 }}>Voltar</Text>
-        </TouchableOpacity>
-      </View>
+      <ResultScreen
+        score={score}
+        total={questions.length}
+        xpEarned={xpEarned}
+        savingResult={savingResult}
+        onSave={async () => {
+          setSavingResult(true)
+          try {
+            const { xpEarned: earned } = await saveQuizResult('SORT_CODE', score, questions.length)
+            setXpEarned(earned)
+          } catch {
+            setXpEarned(score * XP_PER_CORRECT)
+          } finally {
+            setSavingResult(false)
+          }
+        }}
+        onBack={() => navigation.navigate('Home')}
+      />
     )
   }
 
@@ -190,14 +194,34 @@ export function SortCodeScreen({ navigation, route }: any) {
               {isCorrect ? 'Correto!' : 'Ordem incorreta!'}
             </Text>
           </View>
+
           {!isCorrect && (
-            <Text style={styles.feedbackText}>
-              A ordem correta seria:{'\n'}
-              {question.correctOrder.map((line, i) => `${i + 1}. ${line}`).join('\n')}
-            </Text>
+            <View style={{ marginBottom: 12 }}>
+              <Text style={[styles.feedbackText, { fontWeight: '700', marginBottom: 4 }]}>
+                Ordem correta:
+              </Text>
+              <Text style={styles.feedbackText}>
+                {question.correctOrder.map((line, i) => `${i + 1}. ${line}`).join('\n')}
+              </Text>
+            </View>
           )}
-          <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-            <Text style={styles.nextButtonText}>Próximo</Text>
+
+          {question.explanation ? (
+            <View style={{ marginBottom: 12 }}>
+              <Text style={[styles.feedbackText, { fontWeight: '700', marginBottom: 4 }]}>
+                Explicação:
+              </Text>
+              <Text style={styles.feedbackText}>{question.explanation}</Text>
+            </View>
+          ) : null}
+
+          <TouchableOpacity
+            style={[styles.nextButton, { flexDirection: 'row', justifyContent: 'center', gap: 8 }]}
+            onPress={handleNext}
+          >
+            <Text style={styles.nextButtonText}>
+              {currentIndex + 1 >= questions.length ? 'Ver resultado' : 'Próximo'}
+            </Text>
             <Ionicons name="arrow-forward" size={16} color="#1E1E1E" />
           </TouchableOpacity>
         </View>
@@ -216,5 +240,82 @@ export function SortCodeScreen({ navigation, route }: any) {
         </TouchableOpacity>
       )}
     </ScrollView>
+  )
+}
+
+function ResultScreen({
+  score,
+  total,
+  xpEarned,
+  savingResult,
+  onSave,
+  onBack,
+}: {
+  score: number
+  total: number
+  xpEarned: number | null
+  savingResult: boolean
+  onSave: () => void
+  onBack: () => void
+}) {
+  const expectedXp = score * XP_PER_CORRECT
+
+  useEffect(() => {
+    if (xpEarned === null && !savingResult) {
+      onSave()
+    }
+  }, [])
+
+  const message =
+    score === total
+      ? 'Perfeito! Você acertou tudo!'
+      : score >= total / 2
+      ? 'Bom trabalho! Continue praticando.'
+      : 'Continue tentando, você vai melhorar!'
+
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5F5F5', padding: 32 }}>
+      <Ionicons name="trophy" size={64} color="#6C5CE7" style={{ marginBottom: 16 }} />
+      <Text style={{ fontSize: 24, fontWeight: '700', color: '#111', marginBottom: 4 }}>Parabéns!</Text>
+      <Text style={{ fontSize: 16, color: '#666', marginBottom: 24 }}>Você concluiu o desafio</Text>
+
+      <View style={{
+        backgroundColor: '#FFF', borderRadius: 16, padding: 20,
+        alignItems: 'center', width: '100%', marginBottom: 16, elevation: 2,
+      }}>
+        <Text style={{ fontSize: 14, color: '#666', marginBottom: 4 }}>Acertos</Text>
+        <Text style={{ fontSize: 40, fontWeight: '700', color: '#6C5CE7' }}>{score}/{total}</Text>
+      </View>
+
+      {savingResult ? (
+        <ActivityIndicator color="#6C5CE7" style={{ marginVertical: 16 }} />
+      ) : (
+        <View style={{
+          flexDirection: 'row', alignItems: 'center', gap: 8,
+          backgroundColor: '#EFFFF0', paddingHorizontal: 20, paddingVertical: 12,
+          borderRadius: 12, marginBottom: 16,
+        }}>
+          <Ionicons name="star" size={24} color="#27ae60" />
+          <Text style={{ fontSize: 20, fontWeight: '700', color: '#27ae60' }}>
+            +{xpEarned ?? expectedXp} XP ganhos
+          </Text>
+        </View>
+      )}
+
+      <Text style={{ fontSize: 15, color: '#666', textAlign: 'center', marginBottom: 32, lineHeight: 22 }}>
+        {message}
+      </Text>
+
+      <TouchableOpacity
+        style={{
+          backgroundColor: '#6C5CE7', paddingVertical: 14, paddingHorizontal: 32,
+          borderRadius: 12, flexDirection: 'row', alignItems: 'center', gap: 8,
+        }}
+        onPress={onBack}
+      >
+        <Ionicons name="home-outline" size={20} color="#FFF" />
+        <Text style={{ color: '#FFF', fontWeight: '700', fontSize: 16 }}>Voltar ao início</Text>
+      </TouchableOpacity>
+    </View>
   )
 }
