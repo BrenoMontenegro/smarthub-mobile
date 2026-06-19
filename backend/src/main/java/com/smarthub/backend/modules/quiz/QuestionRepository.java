@@ -23,4 +23,7 @@ public interface QuestionRepository extends JpaRepository<Question, UUID> {
         @Param("language") String language,
         @Param("difficulty") String difficulty
     );
+
+    @Query(value = "SELECT COUNT(*) FROM questions WHERE question_type = :type", nativeQuery = true)
+    long countByQuestionType(@Param("type") String type);
 }
