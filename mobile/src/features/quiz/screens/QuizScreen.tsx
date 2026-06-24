@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   View,
   Text,
@@ -6,15 +6,21 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { styles } from './quiz.styles'
 import { Question } from '../types/quiz.types'
 import { getQuizQuestions, saveQuizResult } from '../services/quiz.service'
 
-const XP_PER_CORRECT = 35
+function xpPerQuestion(difficulty: string): number {
+  if (difficulty === 'Difícil') return 80
+  if (difficulty === 'Médio') return 40
+  return 20
+}
 
 export function QuizScreen({ navigation, route }: any) {
   const { language, difficulty } = route?.params ?? {}
+  const insets = useSafeAreaInsets()
 
   const [questions, setQuestions] = useState<Question[]>([])
   const [loading, setLoading] = useState(true)
@@ -24,10 +30,17 @@ export function QuizScreen({ navigation, route }: any) {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
   const [score, setScore] = useState(0)
   const [xpEarned, setXpEarned] = useState<number | null>(null)
+  const scrollRef = useRef<ScrollView>(null)
 
   useEffect(() => {
     loadQuestions()
   }, [])
+
+  useEffect(() => {
+    if (isCorrect !== null) {
+      setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 100)
+    }
+  }, [isCorrect])
 
   async function loadQuestions() {
     try {
@@ -56,6 +69,7 @@ export function QuizScreen({ navigation, route }: any) {
     setSelectedOption(null)
     setIsCorrect(null)
     setCurrentQuestionIndex(prev => prev + 1)
+    scrollRef.current?.scrollTo({ y: 0, animated: false })
   }
 
   if (loading) {
@@ -85,6 +99,7 @@ export function QuizScreen({ navigation, route }: any) {
       <ResultScreen
         score={score}
         total={questions.length}
+        difficulty={difficulty ?? ''}
         xpEarned={xpEarned}
         onXpEarned={setXpEarned}
         onBack={() => navigation.navigate('Home')}
@@ -95,7 +110,13 @@ export function QuizScreen({ navigation, route }: any) {
   const showFeedback = isCorrect !== null
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <ScrollView
+      ref={scrollRef}
+      style={styles.container}
+      contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, 12) + 24 }}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="chevron-back" size={24} color="#6C5CE7" />
@@ -187,29 +208,32 @@ export function QuizScreen({ navigation, route }: any) {
         </View>
       )}
     </ScrollView>
+    </SafeAreaView>
   )
 }
 
 function ResultScreen({
   score,
   total,
+  difficulty,
   xpEarned,
   onXpEarned,
   onBack,
 }: {
   score: number
   total: number
+  difficulty: string
   xpEarned: number | null
   onXpEarned: (xp: number) => void
   onBack: () => void
 }) {
   const [saving, setSaving] = useState(false)
-  const expectedXp = score * XP_PER_CORRECT
+  const expectedXp = score * xpPerQuestion(difficulty)
 
   useEffect(() => {
     if (xpEarned !== null) return
     setSaving(true)
-    saveQuizResult('quiz', score, total)
+    saveQuizResult('QUIZ', score, total, difficulty)
       .then(({ xpEarned: earned }) => onXpEarned(earned))
       .catch(() => onXpEarned(expectedXp))
       .finally(() => setSaving(false))

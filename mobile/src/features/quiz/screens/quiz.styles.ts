@@ -1,12 +1,15 @@
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+  },
+
+  container: {
+    flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 32,
+    paddingTop: 12,
   },
 
   centered: {
@@ -17,24 +20,24 @@ export const styles = StyleSheet.create({
   },
 
   header: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
 
   backButton: {
-    marginBottom: 12,
+    marginBottom: 8,
   },
 
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '700',
     color: '#1E1E1E',
   },
 
   progressText: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#666',
-    marginTop: 8,
-    marginBottom: 8,
+    marginTop: 6,
+    marginBottom: 6,
   },
 
   progressBarContainer: {
@@ -54,53 +57,50 @@ export const styles = StyleSheet.create({
   questionCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
-    padding: 20,
-    marginTop: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 3,
+    padding: 16,
+    marginTop: 4,
+    elevation: 2,
   },
 
   questionType: {
-    fontSize: 12,
-    color: '#777',
-    marginBottom: 8,
-    fontWeight: '600',
+    fontSize: 11,
+    color: '#888',
+    marginBottom: 6,
+    fontWeight: '700',
+    letterSpacing: 1,
   },
 
   questionTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
     color: '#1E1E1E',
-    marginBottom: 16,
+    marginBottom: 12,
+    lineHeight: 22,
   },
 
   codeContainer: {
-    backgroundColor: '#F3F3F3',
-    borderWidth: 1,
-    borderColor: '#DADADA',
+    backgroundColor: '#1E1E2E',
     borderRadius: 12,
-    padding: 14,
+    padding: 12,
   },
 
   codeText: {
     fontFamily: 'monospace',
-    fontSize: 14,
-    color: '#333',
-    lineHeight: 22,
+    fontSize: 13,
+    color: '#CDD6F4',
+    lineHeight: 20,
   },
 
   optionsContainer: {
-    marginTop: 24,
-    gap: 12,
+    marginTop: 16,
+    gap: 10,
   },
 
   optionButton: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 14,
-    paddingVertical: 16,
-    paddingHorizontal: 20,
+    borderRadius: 12,
+    paddingVertical: 13,
+    paddingHorizontal: 16,
     borderWidth: 2,
     borderColor: '#E8E8E8',
     flexDirection: 'row',
@@ -135,9 +135,9 @@ export const styles = StyleSheet.create({
   },
 
   feedbackContainer: {
-    marginTop: 24,
+    marginTop: 16,
     borderRadius: 16,
-    padding: 20,
+    padding: 16,
     borderWidth: 1,
   },
 

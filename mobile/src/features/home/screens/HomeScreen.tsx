@@ -19,9 +19,13 @@ import { getUserProfile, UserProfile } from '../../../shared/services/user.servi
 import { BottomNav } from '../../../shared/components/BottomNav'
 import { useTheme } from '../../../shared/theme/ThemeContext'
 
+function xpToReachLevel(n: number): number {
+  return 250 * n * (n - 1)
+}
+
 function calcXpProgress(totalXp: number, level: number) {
-  const xpCurrentLevel = (level - 1) ** 2 * 100
-  const xpNextLevel = level ** 2 * 100
+  const xpCurrentLevel = xpToReachLevel(level)
+  const xpNextLevel = xpToReachLevel(level + 1)
   const progress = (totalXp - xpCurrentLevel) / (xpNextLevel - xpCurrentLevel)
   return {
     xpProgress: totalXp - xpCurrentLevel,

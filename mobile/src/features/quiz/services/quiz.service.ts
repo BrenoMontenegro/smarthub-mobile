@@ -7,7 +7,7 @@ const toBackendLanguage = (name: string): string =>
 const toBackendDifficulty = (d: string): string =>
   ({ 'Fácil': 'FACIL', 'Médio': 'MEDIO', 'Difícil': 'DIFICIL' } as Record<string, string>)[d] ?? d.toUpperCase()
 
-const QUIZ_QUESTION_COUNT = 6
+const QUIZ_QUESTION_COUNT = 10
 
 function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array]
@@ -22,8 +22,14 @@ export async function saveQuizResult(
   challengeType: string,
   score: number,
   totalQuestions: number,
+  difficulty: string,
 ): Promise<{ xpEarned: number }> {
-  const { data } = await api.post('/quiz/results', { challengeType, score, totalQuestions })
+  const { data } = await api.post('/quiz/results', {
+    challengeType,
+    score,
+    totalQuestions,
+    difficulty: toBackendDifficulty(difficulty),
+  })
   return { xpEarned: data.xpEarned ?? 0 }
 }
 
