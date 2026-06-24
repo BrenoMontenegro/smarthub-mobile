@@ -15,4 +15,6 @@ public class QuizResultRequest {
 
     @Min(value = 1, message = "totalQuestions deve ser ao menos 1")
     private int totalQuestions;
+
+    private String difficulty;
 }

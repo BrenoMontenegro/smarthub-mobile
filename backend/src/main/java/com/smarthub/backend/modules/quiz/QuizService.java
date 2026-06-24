@@ -44,7 +44,7 @@ public class QuizService {
             .orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.NOT_FOUND, "Usuário não encontrado."));
 
-        int xpEarned = calculateXp(request.getScore(), request.getTotalQuestions());
+        int xpEarned = calculateXp(request.getScore(), request.getDifficulty());
 
         QuizResult result = QuizResult.builder()
             .user(user)
@@ -69,14 +69,22 @@ public class QuizService {
         return quizResultRepository.findByUserIdOrderByCompletedAtDesc(user.getId());
     }
 
-    private static final int XP_PER_CORRECT_ANSWER = 35;
-
-    private int calculateXp(int score, int total) {
-        return score * XP_PER_CORRECT_ANSWER;
+    private int calculateXp(int score, String difficulty) {
+        int xpPerQuestion = switch (difficulty != null ? difficulty.toUpperCase() : "FACIL") {
+            case "MEDIO"   -> 40;
+            case "DIFICIL" -> 80;
+            default        -> 20;
+        };
+        return score * xpPerQuestion;
     }
 
     private int calculateLevel(int totalXp) {
-        return (int) Math.sqrt((double) totalXp / 100) + 1;
+        // xpToReach(n) = 250 * n * (n-1): L2=500, L3=1500, L4=3000, each delta +500
+        int level = 1;
+        while (250 * (level + 1) * level <= totalXp) {
+            level++;
+        }
+        return level;
     }
 
     private String resolveType(Question q) {
