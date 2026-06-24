@@ -1,39 +1,43 @@
 import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+  },
+
+  container: {
+    flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 60,
+    paddingTop: 12,
   },
 
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 16,
   },
 
   headerTitle: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '700',
     marginLeft: 10,
     color: '#111',
   },
 
   progressText: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#666',
-    marginBottom: 8,
+    marginBottom: 6,
   },
 
   progressBarBackground: {
     width: '100%',
-    height: 8,
+    height: 6,
     backgroundColor: '#E0E0E0',
     borderRadius: 999,
     overflow: 'hidden',
-    marginBottom: 24,
+    marginBottom: 14,
   },
 
   progressBarFill: {
@@ -44,40 +48,41 @@ export const styles = StyleSheet.create({
 
   card: {
     backgroundColor: '#FFF',
-    borderRadius: 16,
-    padding: 18,
-    marginBottom: 20,
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 12,
   },
 
   sectionTitle: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '700',
-    color: '#444',
-    marginBottom: 8,
+    color: '#999',
+    letterSpacing: 1,
+    marginBottom: 6,
   },
 
   questionTitle: {
-    fontSize: 15,
+    fontSize: 14,
     color: '#333',
-    lineHeight: 22,
+    lineHeight: 20,
   },
 
   label: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600',
     color: '#666',
-    marginBottom: 10,
+    marginBottom: 8,
   },
 
   orderedContainer: {
-    minHeight: 80,
+    minHeight: 60,
     backgroundColor: '#FFF',
-    borderRadius: 16,
-    padding: 12,
-    marginBottom: 20,
+    borderRadius: 14,
+    padding: 10,
+    marginBottom: 14,
     borderWidth: 1,
     borderColor: '#DDD',
-    gap: 8,
+    gap: 6,
   },
 
   placeholder: {
@@ -91,64 +96,68 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#6C5CE7',
-    borderRadius: 10,
-    padding: 12,
-    gap: 10,
+    borderRadius: 8,
+    padding: 10,
+    gap: 8,
   },
 
   lineNumber: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     backgroundColor: '#FFF',
     justifyContent: 'center',
     alignItems: 'center',
   },
 
   lineNumberText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '700',
     color: '#6C5CE7',
   },
 
   lineText: {
     fontFamily: 'monospace',
-    fontSize: 13,
+    fontSize: 12,
     color: '#FFF',
     flex: 1,
   },
 
   availableContainer: {
-    gap: 8,
-    marginBottom: 24,
+    gap: 6,
+    marginBottom: 16,
   },
 
   availableLine: {
     backgroundColor: '#FFF',
-    borderRadius: 10,
-    padding: 14,
+    borderRadius: 8,
+    padding: 11,
     borderWidth: 1,
     borderColor: '#DDD',
   },
 
   availableLineText: {
     fontFamily: 'monospace',
-    fontSize: 13,
+    fontSize: 12,
     color: '#333',
   },
 
   feedbackCorrect: {
     backgroundColor: '#EFFFF5',
-    borderRadius: 16,
-    padding: 18,
-    marginBottom: 40,
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 20,
+    borderLeftWidth: 4,
+    borderLeftColor: '#2ECC71',
   },
 
   feedbackWrong: {
     backgroundColor: '#FFF0F0',
-    borderRadius: 16,
-    padding: 18,
-    marginBottom: 40,
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 20,
+    borderLeftWidth: 4,
+    borderLeftColor: '#FF4D4D',
   },
 
   feedbackCorrectTitle: {
@@ -188,10 +197,10 @@ export const styles = StyleSheet.create({
 
   checkButton: {
     backgroundColor: '#6C5CE7',
-    paddingVertical: 16,
-    borderRadius: 14,
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 20,
   },
 
   checkButtonDisabled: {

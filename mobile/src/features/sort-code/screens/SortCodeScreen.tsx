@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   View,
   Text,
@@ -6,16 +6,22 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { styles } from './sortCode.styles'
 import { SortCodeQuestion } from '../types/sortCode.types'
 import { getSortCodeQuestions } from '../services/sortCode.service'
 import { saveQuizResult } from '../../quiz/services/quiz.service'
 
-const XP_PER_CORRECT = 35
+function xpPerQuestion(difficulty: string): number {
+  if (difficulty === 'Difícil') return 80
+  if (difficulty === 'Médio') return 40
+  return 20
+}
 
 export function SortCodeScreen({ navigation, route }: any) {
   const { language, difficulty } = route?.params ?? {}
+  const insets = useSafeAreaInsets()
 
   const [questions, setQuestions] = useState<SortCodeQuestion[]>([])
   const [loading, setLoading] = useState(true)
@@ -28,10 +34,17 @@ export function SortCodeScreen({ navigation, route }: any) {
   const [score, setScore] = useState(0)
   const [xpEarned, setXpEarned] = useState<number | null>(null)
   const [savingResult, setSavingResult] = useState(false)
+  const scrollRef = useRef<ScrollView>(null)
 
   useEffect(() => {
     loadQuestions()
   }, [])
+
+  useEffect(() => {
+    if (isChecked) {
+      setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 100)
+    }
+  }, [isChecked])
 
   async function loadQuestions() {
     try {
@@ -74,6 +87,7 @@ export function SortCodeScreen({ navigation, route }: any) {
     if (questions[next]) {
       setAvailableLines(questions[next].availableLines)
     }
+    scrollRef.current?.scrollTo({ y: 0, animated: false })
   }
 
   if (loading) {
@@ -105,15 +119,16 @@ export function SortCodeScreen({ navigation, route }: any) {
       <ResultScreen
         score={score}
         total={questions.length}
+        fallbackXp={score * xpPerQuestion(difficulty ?? '')}
         xpEarned={xpEarned}
         savingResult={savingResult}
         onSave={async () => {
           setSavingResult(true)
           try {
-            const { xpEarned: earned } = await saveQuizResult('SORT_CODE', score, questions.length)
+            const { xpEarned: earned } = await saveQuizResult('SORT_CODE', score, questions.length, difficulty ?? '')
             setXpEarned(earned)
           } catch {
-            setXpEarned(score * XP_PER_CORRECT)
+            setXpEarned(score * xpPerQuestion(difficulty ?? ''))
           } finally {
             setSavingResult(false)
           }
@@ -124,7 +139,13 @@ export function SortCodeScreen({ navigation, route }: any) {
   }
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <ScrollView
+      ref={scrollRef}
+      style={styles.container}
+      contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, 12) + 24 }}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={24} color="#6C5CE7" />
@@ -240,12 +261,14 @@ export function SortCodeScreen({ navigation, route }: any) {
         </TouchableOpacity>
       )}
     </ScrollView>
+    </SafeAreaView>
   )
 }
 
 function ResultScreen({
   score,
   total,
+  fallbackXp,
   xpEarned,
   savingResult,
   onSave,
@@ -253,12 +276,13 @@ function ResultScreen({
 }: {
   score: number
   total: number
+  fallbackXp: number
   xpEarned: number | null
   savingResult: boolean
   onSave: () => void
   onBack: () => void
 }) {
-  const expectedXp = score * XP_PER_CORRECT
+  const expectedXp = fallbackXp
 
   useEffect(() => {
     if (xpEarned === null && !savingResult) {

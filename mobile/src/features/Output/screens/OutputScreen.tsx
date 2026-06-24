@@ -6,15 +6,18 @@ import {
   ScrollView,
   ActivityIndicator,
 } from 'react-native'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { styles } from './output.styles'
 import { OutputQuestion } from '../types/output.types'
 import { getOutputQuestions } from '../services/output.service'
+import { saveQuizResult } from '../../quiz/services/quiz.service'
 
 const TIMER_SECONDS = 30
 
 export function OutputScreen({ navigation, route }: any) {
   const { language, difficulty } = route?.params ?? {}
+  const insets = useSafeAreaInsets()
 
   const [questions, setQuestions] = useState<OutputQuestion[]>([])
   const [loading, setLoading] = useState(true)
@@ -24,15 +27,28 @@ export function OutputScreen({ navigation, route }: any) {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
   const [score, setScore] = useState(0)
   const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS)
+  const [xpEarned, setXpEarned] = useState<number | null>(null)
+  const [savingResult, setSavingResult] = useState(false)
   const timerRef = useRef<any>(null)
+  const scrollRef = useRef<ScrollView>(null)
 
   useEffect(() => {
     loadQuestions()
   }, [])
 
+  useEffect(() => {
+    if (selectedOption !== null) {
+      setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 100)
+    }
+  }, [selectedOption])
+
   async function loadQuestions() {
     try {
       const data = await getOutputQuestions(language?.name ?? '', difficulty ?? '')
+      if (data.length === 0) {
+        setError('Nenhuma questão encontrada para essa combinação.')
+        return
+      }
       setQuestions(data)
     } catch {
       setError('Não foi possível carregar as questões.')
@@ -79,11 +95,12 @@ export function OutputScreen({ navigation, route }: any) {
     setSelectedOption(null)
     setIsCorrect(null)
     setCurrentIndex(prev => prev + 1)
+    scrollRef.current?.scrollTo({ y: 0, animated: false })
   }
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={styles.centered}>
         <ActivityIndicator size="large" color="#6C5CE7" />
       </View>
     )
@@ -91,13 +108,11 @@ export function OutputScreen({ navigation, route }: any) {
 
   if (error) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 }}>
-        <Text style={{ fontSize: 16, color: '#666', textAlign: 'center', marginBottom: 24 }}>{error}</Text>
-        <TouchableOpacity
-          style={{ backgroundColor: '#6C5CE7', paddingVertical: 14, paddingHorizontal: 32, borderRadius: 12 }}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={{ color: '#FFF', fontWeight: '700' }}>Voltar</Text>
+      <View style={[styles.centered, { padding: 32 }]}>
+        <Ionicons name="alert-circle-outline" size={48} color="#666" style={{ marginBottom: 16 }} />
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity style={styles.primaryButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.primaryButtonText}>Voltar</Text>
         </TouchableOpacity>
       </View>
     )
@@ -105,40 +120,62 @@ export function OutputScreen({ navigation, route }: any) {
 
   const question = questions[currentIndex]
 
-  if (!question) {
-    const total = questions.length
-    const message = score === total
-      ? 'Perfeito! Você acertou tudo!'
-      : score >= total / 2
-      ? 'Bom trabalho! Continue praticando.'
-      : 'Continue tentando, você vai melhorar!'
+  function xpPerQ(): number {
+    if (difficulty === 'Difícil') return 80
+    if (difficulty === 'Médio') return 40
+    return 20
+  }
 
+  if (!question) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5F5F5', padding: 32 }}>
-        <Ionicons name="trophy" size={64} color="#6C5CE7" style={{ marginBottom: 16 }} />
-        <Text style={{ fontSize: 24, fontWeight: '700', color: '#111', marginBottom: 8 }}>Resultado</Text>
-        <Text style={{ fontSize: 40, fontWeight: '700', color: '#6C5CE7', marginBottom: 8 }}>{score}/{total}</Text>
-        <Text style={{ fontSize: 16, color: '#666', textAlign: 'center', marginBottom: 32 }}>{message}</Text>
-        <TouchableOpacity
-          style={{ backgroundColor: '#6C5CE7', paddingVertical: 14, paddingHorizontal: 32, borderRadius: 12 }}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={{ color: '#FFF', fontWeight: '700', fontSize: 16 }}>Voltar</Text>
-        </TouchableOpacity>
-      </View>
+      <ResultScreen
+        score={score}
+        total={questions.length}
+        fallbackXp={score * xpPerQ()}
+        xpEarned={xpEarned}
+        savingResult={savingResult}
+        onSave={async () => {
+          setSavingResult(true)
+          try {
+            const { xpEarned: earned } = await saveQuizResult('OUTPUT', score, questions.length, difficulty ?? '')
+            setXpEarned(earned)
+          } catch {
+            setXpEarned(score * xpPerQ())
+          } finally {
+            setSavingResult(false)
+          }
+        }}
+        onBack={() => navigation.navigate('Home')}
+      />
     )
   }
 
+  const showFeedback = selectedOption !== null
+  const timedOut = selectedOption === '__timeout__'
+
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <ScrollView
+      ref={scrollRef}
+      style={styles.container}
+      contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, 12) + 24 }}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={24} color="#6C5CE7" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Acertar o Output</Text>
-        <Text style={[styles.timer, timeLeft <= 10 && styles.timerWarning]}>
-          {timeLeft}s
-        </Text>
+        <View style={[styles.timerBadge, timeLeft <= 10 && styles.timerBadgeWarning]}>
+          <Ionicons
+            name="timer-outline"
+            size={14}
+            color={timeLeft <= 10 ? '#e74c3c' : '#6C5CE7'}
+          />
+          <Text style={[styles.timer, timeLeft <= 10 && styles.timerWarning]}>
+            {timeLeft}s
+          </Text>
+        </View>
       </View>
 
       <Text style={styles.progressText}>
@@ -146,10 +183,12 @@ export function OutputScreen({ navigation, route }: any) {
       </Text>
 
       <View style={styles.progressBarBackground}>
-        <View style={[
-          styles.progressBarFill,
-          { width: `${((currentIndex + 1) / questions.length) * 100}%` }
-        ]} />
+        <View
+          style={[
+            styles.progressBarFill,
+            { width: `${((currentIndex + 1) / questions.length) * 100}%` },
+          ]}
+        />
       </View>
 
       <View style={styles.card}>
@@ -164,6 +203,7 @@ export function OutputScreen({ navigation, route }: any) {
       <View style={styles.optionsContainer}>
         {question.options.map(option => {
           const isSelected = selectedOption === option
+          const isCorrectOption = option === question.correctAnswer
           const isWrong = isSelected && !isCorrect
 
           return (
@@ -171,45 +211,132 @@ export function OutputScreen({ navigation, route }: any) {
               key={option}
               style={[
                 styles.optionButton,
-                isSelected && isCorrect && styles.optionCorrect,
-                isWrong && styles.optionWrong,
+                showFeedback && isCorrectOption && styles.optionCorrect,
+                showFeedback && isWrong && styles.optionWrong,
+                !showFeedback && isSelected && styles.optionSelected,
               ]}
               onPress={() => handleSelectOption(option)}
-              disabled={selectedOption !== null}
+              disabled={showFeedback}
             >
-              <Text style={styles.optionText}>{option}</Text>
+              <Text style={[
+                styles.optionText,
+                showFeedback && isCorrectOption && styles.optionTextCorrect,
+                showFeedback && isWrong && styles.optionTextWrong,
+              ]}>
+                {option}
+              </Text>
+              {showFeedback && isCorrectOption && (
+                <Ionicons name="checkmark-circle" size={20} color="#2ECC71" />
+              )}
+              {showFeedback && isWrong && (
+                <Ionicons name="close-circle" size={20} color="#FF4D4D" />
+              )}
             </TouchableOpacity>
           )
         })}
       </View>
 
-      {isCorrect !== null && (
+      {showFeedback && (
         <View style={isCorrect ? styles.feedbackCorrect : styles.feedbackWrong}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+          <View style={styles.feedbackHeader}>
             <Ionicons
-              name={
-                selectedOption === '__timeout__'
-                  ? 'timer-outline'
-                  : isCorrect
-                  ? 'checkmark-circle'
-                  : 'close-circle'
-              }
+              name={timedOut ? 'timer-outline' : isCorrect ? 'checkmark-circle' : 'close-circle'}
               size={24}
-              color={selectedOption === '__timeout__' ? '#e67e22' : isCorrect ? '#27ae60' : '#e74c3c'}
+              color={timedOut ? '#e67e22' : isCorrect ? '#27ae60' : '#e74c3c'}
             />
             <Text style={isCorrect ? styles.feedbackCorrectTitle : styles.feedbackWrongTitle}>
-              {selectedOption === '__timeout__'
-                ? 'Tempo esgotado!'
-                : isCorrect ? 'Correto!' : 'Quase lá!'}
+              {timedOut ? 'Tempo esgotado!' : isCorrect ? 'Correto!' : 'Quase lá!'}
             </Text>
           </View>
+
+          {!isCorrect && !timedOut && (
+            <View style={styles.correctAnswerBox}>
+              <Text style={styles.correctAnswerLabel}>Resposta correta:</Text>
+              <Text style={styles.correctAnswerValue}>{question.correctAnswer}</Text>
+            </View>
+          )}
+
+          {timedOut && (
+            <View style={styles.correctAnswerBox}>
+              <Text style={styles.correctAnswerLabel}>A resposta era:</Text>
+              <Text style={styles.correctAnswerValue}>{question.correctAnswer}</Text>
+            </View>
+          )}
+
+          <Text style={styles.explanationLabel}>Explicação:</Text>
           <Text style={styles.feedbackText}>{question.explanation}</Text>
+
           <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-            <Text style={styles.nextButtonText}>Próxima</Text>
-            <Ionicons name="arrow-forward" size={16} color="#1E1E1E" />
+            <Text style={styles.nextButtonText}>
+              {currentIndex + 1 >= questions.length ? 'Ver resultado' : 'Próxima questão'}
+            </Text>
+            <Ionicons name="arrow-forward" size={18} color="#6C5CE7" />
           </TouchableOpacity>
         </View>
       )}
     </ScrollView>
+    </SafeAreaView>
+  )
+}
+
+function ResultScreen({
+  score,
+  total,
+  fallbackXp,
+  xpEarned,
+  savingResult,
+  onSave,
+  onBack,
+}: {
+  score: number
+  total: number
+  fallbackXp: number
+  xpEarned: number | null
+  savingResult: boolean
+  onSave: () => void
+  onBack: () => void
+}) {
+  const expectedXp = fallbackXp
+
+  useEffect(() => {
+    if (xpEarned === null && !savingResult) {
+      onSave()
+    }
+  }, [])
+
+  const message =
+    score === total
+      ? 'Perfeito! Você acertou tudo!'
+      : score >= total / 2
+      ? 'Bom trabalho! Continue praticando.'
+      : 'Continue tentando, você vai melhorar!'
+
+  return (
+    <View style={styles.resultContainer}>
+      <Ionicons name="trophy" size={64} color="#6C5CE7" style={{ marginBottom: 16 }} />
+      <Text style={styles.resultTitle}>Parabéns!</Text>
+      <Text style={styles.resultSubtitle}>Você concluiu o módulo</Text>
+
+      <View style={styles.resultScoreCard}>
+        <Text style={styles.resultScoreLabel}>Acertos</Text>
+        <Text style={styles.resultScoreValue}>{score}/{total}</Text>
+      </View>
+
+      {savingResult ? (
+        <ActivityIndicator color="#6C5CE7" style={{ marginVertical: 16 }} />
+      ) : (
+        <View style={styles.xpCard}>
+          <Ionicons name="star" size={24} color="#27ae60" />
+          <Text style={styles.xpText}>+{xpEarned ?? expectedXp} XP ganhos</Text>
+        </View>
+      )}
+
+      <Text style={styles.resultMessage}>{message}</Text>
+
+      <TouchableOpacity style={styles.primaryButton} onPress={onBack}>
+        <Ionicons name="home-outline" size={20} color="#FFF" />
+        <Text style={styles.primaryButtonText}>Voltar ao início</Text>
+      </TouchableOpacity>
+    </View>
   )
 }
