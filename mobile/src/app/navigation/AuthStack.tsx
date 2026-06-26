@@ -8,7 +8,6 @@ import { QuizScreen } from '../../features/quiz/screens/QuizScreen'
 import { CompleteCodeScreen } from '../../features/code-complete/screens/CompleteCodeScreen'
 import { ProfileScreen } from '../../features/profile/screens/ProfileScreen'
 import { EditProfileScreen } from '../../features/profile/screens/EditProfileScreen'
-import { LanguageSettingsScreen } from '../../features/profile/screens/LanguageSettingsScreen'
 import { SecurityScreen } from '../../features/profile/screens/SecurityScreen'
 import { ThemeSettingsScreen } from '../../features/profile/screens/ThemeSettingsScreen'
 import { InfoScreen } from '../../features/profile/screens/InfoScreen'
@@ -29,7 +28,6 @@ export default function AuthStack() {
       <Stack.Screen name="CompleteCode" component={CompleteCodeScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-      <Stack.Screen name="LanguageSettings" component={LanguageSettingsScreen} />
       <Stack.Screen name="Security" component={SecurityScreen} />
       <Stack.Screen name="ThemeSettings" component={ThemeSettingsScreen} />
       <Stack.Screen name="Info" component={InfoScreen} />

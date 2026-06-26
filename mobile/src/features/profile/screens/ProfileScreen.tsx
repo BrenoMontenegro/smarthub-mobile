@@ -51,11 +51,6 @@ export function ProfileScreen({ navigation }: any) {
       icon: 'create-outline',
       onPress: () => navigation.navigate('EditProfile', { profile: userProfile }),
     },
-    {
-      label: 'Linguagem e idioma',
-      icon: 'language-outline',
-      onPress: () => navigation.navigate('LanguageSettings'),
-    },
   ]
 
   const settingsOptions: ProfileOption[] = [
