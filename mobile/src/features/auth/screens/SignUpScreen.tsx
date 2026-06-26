@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, Image } from 'react-native'
 import { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { signUp, getAuthErrorMessage } from '../../../shared/services/auth.service'
@@ -43,10 +43,17 @@ export default function SignUpScreen({ navigation }: any) {
 
   return (
     <View style={styles.container}>
-      
-      <Text style={styles.title}>Sign Up</Text>
+
+      <Image
+        source={require('../../../../assets/logo.png')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+
+      <Text style={styles.title}>Cadastrar</Text>
 
       <View style={styles.inputContainer}>
+        <Ionicons name="person-outline" size={20} color="#aaa" />
         <TextInput
           placeholder="Username"
           style={styles.input}
@@ -56,7 +63,7 @@ export default function SignUpScreen({ navigation }: any) {
       </View>
 
       <View style={styles.inputContainer}>
-        <Ionicons name="person-outline" size={20} color="#aaa" />
+        <Ionicons name="mail-outline" size={20} color="#aaa" />
         <TextInput
           placeholder="Email"
           style={styles.input}
@@ -69,7 +76,7 @@ export default function SignUpScreen({ navigation }: any) {
       <View style={styles.inputContainer}>
         <Ionicons name="key-outline" size={20} color="#aaa" />
         <TextInput
-          placeholder="Password"
+          placeholder="Senha"
           secureTextEntry
           style={styles.input}
           onChangeText={setPassword}
@@ -86,44 +93,17 @@ export default function SignUpScreen({ navigation }: any) {
         />
       </View>
 
-      <View style={styles.terms}>
-        <View style={styles.checkbox} />
-        <Text style={styles.termsText}>
-          Aceito os termos de uso e política de privacidade
-        </Text>
-      </View>
-
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleSignUp}
-        disabled={loading}
-      >
+      <TouchableOpacity style={styles.button} onPress={handleSignUp} disabled={loading}>
         {loading
-          ? <ActivityIndicator color="#333" />
+          ? <ActivityIndicator color="#FFF" />
           : <Text style={styles.buttonText}>Cadastrar</Text>}
       </TouchableOpacity>
 
-      <Text style={styles.or}>- OU -</Text>
-      <Text style={styles.socialText}>Entre usando</Text>
-
-      <View style={styles.socialContainer}>
-        <View style={styles.socialButton}>
-          <Text style={{ fontWeight: 'bold' }}>f</Text>
-        </View>
-
-        <View style={styles.socialButton}>
-          <Text style={{ fontWeight: 'bold' }}>G</Text>
-        </View>
-      </View>
-
       <Text style={styles.footer}>
         Já possui conta?{' '}
-        <Text
-          style={styles.link}
-          onPress={() => navigation.navigate('SignIn')}
-        >
+        <Text style={styles.link} onPress={() => navigation.navigate('SignIn')}>
           Entrar
         </Text>
       </Text>
@@ -135,18 +115,23 @@ export default function SignUpScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 25,
+    paddingHorizontal: 25,
+    paddingTop: 8,
     backgroundColor: '#fff',
-    justifyContent: 'center'
   },
-
+  logo: {
+    width: 180,
+    height: 180,
+    alignSelf: 'center',
+    marginBottom: -10,
+  },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     textAlign: 'center',
-    marginBottom: 30,
-    fontWeight: '500'
+    marginBottom: 16,
+    fontWeight: '700',
+    color: '#1E1E1E',
   },
-
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -154,89 +139,38 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 12,
     height: 50,
-    marginBottom: 15
+    marginBottom: 15,
   },
-
   input: {
     flex: 1,
-    marginLeft: 10
+    marginLeft: 10,
   },
-
-  terms: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20
-  },
-
-  checkbox: {
-    width: 14,
-    height: 14,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginRight: 8
-  },
-
-  termsText: {
-    fontSize: 11,
-    color: '#555',
-    flex: 1
-  },
-
   errorText: {
     color: '#e74c3c',
     textAlign: 'center',
     marginBottom: 10,
-    fontSize: 13
+    fontSize: 13,
   },
-
   button: {
-    backgroundColor: '#ddd',
+    backgroundColor: '#6C5CE7',
     height: 50,
     borderRadius: 25,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 24,
   },
-
   buttonText: {
-    color: '#333',
-    fontWeight: '500'
+    color: '#FFF',
+    fontWeight: '700',
+    fontSize: 16,
   },
-
-  or: {
-    textAlign: 'center',
-    marginVertical: 15,
-    color: '#888'
-  },
-
-  socialText: {
-    textAlign: 'center',
-    marginBottom: 10,
-    color: '#666'
-  },
-
-  socialContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 15,
-    marginBottom: 20
-  },
-
-  socialButton: {
-    width: 45,
-    height: 45,
-    backgroundColor: '#eee',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-
   footer: {
     textAlign: 'center',
-    fontSize: 12,
-    color: '#666'
+    fontSize: 13,
+    color: '#666',
   },
-
   link: {
-    fontWeight: 'bold'
-  }
+    fontWeight: '700',
+    color: '#6C5CE7',
+  },
 })
