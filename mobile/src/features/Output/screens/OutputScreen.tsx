@@ -13,12 +13,14 @@ import { styles } from './output.styles'
 import { OutputQuestion } from '../types/output.types'
 import { getOutputQuestions } from '../services/output.service'
 import { saveQuizResult } from '../../quiz/services/quiz.service'
+import { useTheme } from '../../../shared/theme/ThemeContext'
 
 const TIMER_SECONDS = 30
 
 export function OutputScreen({ navigation, route }: any) {
   const { language, difficulty } = route?.params ?? {}
   const insets = useSafeAreaInsets()
+  const { colors } = useTheme()
 
   const [questions, setQuestions] = useState<OutputQuestion[]>([])
   const [loading, setLoading] = useState(true)
@@ -106,17 +108,17 @@ export function OutputScreen({ navigation, route }: any) {
 
   if (loading) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#6C5CE7" />
+      <View style={[styles.centered, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     )
   }
 
   if (error) {
     return (
-      <View style={[styles.centered, { padding: 32 }]}>
-        <Ionicons name="alert-circle-outline" size={48} color="#666" style={{ marginBottom: 16 }} />
-        <Text style={styles.errorText}>{error}</Text>
+      <View style={[styles.centered, { backgroundColor: colors.background, padding: 32 }]}>
+        <Ionicons name="alert-circle-outline" size={48} color={colors.textSecondary} style={{ marginBottom: 16 }} />
+        <Text style={[styles.errorText, { color: colors.textSecondary }]}>{error}</Text>
         <TouchableOpacity style={styles.primaryButton} onPress={() => navigation.goBack()}>
           <Text style={styles.primaryButtonText}>Voltar</Text>
         </TouchableOpacity>
@@ -160,7 +162,7 @@ export function OutputScreen({ navigation, route }: any) {
   const timedOut = selectedOption === '__timeout__'
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]} edges={['top']}>
     <ScrollView
       ref={scrollRef}
       style={styles.container}
@@ -169,14 +171,14 @@ export function OutputScreen({ navigation, route }: any) {
     >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color="#6C5CE7" />
+          <Ionicons name="chevron-back" size={24} color={colors.primary} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Acertar o Output</Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Acertar o Output</Text>
         <View style={[styles.timerBadge, timeLeft <= 10 && styles.timerBadgeWarning]}>
           <Ionicons
             name="timer-outline"
             size={14}
-            color={timeLeft <= 10 ? '#e74c3c' : '#6C5CE7'}
+            color={timeLeft <= 10 ? '#e74c3c' : colors.primary}
           />
           <Text style={[styles.timer, timeLeft <= 10 && styles.timerWarning]}>
             {timeLeft}s
@@ -184,11 +186,11 @@ export function OutputScreen({ navigation, route }: any) {
         </View>
       </View>
 
-      <Text style={styles.progressText}>
+      <Text style={[styles.progressText, { color: colors.textSecondary }]}>
         Questão {currentIndex + 1} de {questions.length}
       </Text>
 
-      <View style={styles.progressBarBackground}>
+      <View style={[styles.progressBarBackground, { backgroundColor: colors.border }]}>
         <View
           style={[
             styles.progressBarFill,
@@ -197,9 +199,9 @@ export function OutputScreen({ navigation, route }: any) {
         />
       </View>
 
-      <View style={styles.card}>
-        <Text style={styles.sectionTitle}>DESAFIO</Text>
-        <Text style={styles.questionTitle}>{question.title}</Text>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>DESAFIO</Text>
+        <Text style={[styles.questionTitle, { color: colors.text }]}>{question.title}</Text>
       </View>
 
       <View style={styles.codeCard}>
@@ -217,6 +219,7 @@ export function OutputScreen({ navigation, route }: any) {
               key={option}
               style={[
                 styles.optionButton,
+                { backgroundColor: colors.card, borderColor: colors.border },
                 showFeedback && isCorrectOption && styles.optionCorrect,
                 showFeedback && isWrong && styles.optionWrong,
                 !showFeedback && isSelected && styles.optionSelected,
@@ -226,6 +229,7 @@ export function OutputScreen({ navigation, route }: any) {
             >
               <Text style={[
                 styles.optionText,
+                { color: colors.text },
                 showFeedback && isCorrectOption && styles.optionTextCorrect,
                 showFeedback && isWrong && styles.optionTextWrong,
               ]}>
@@ -256,27 +260,30 @@ export function OutputScreen({ navigation, route }: any) {
           </View>
 
           {!isCorrect && !timedOut && (
-            <View style={styles.correctAnswerBox}>
-              <Text style={styles.correctAnswerLabel}>Resposta correta:</Text>
+            <View style={[styles.correctAnswerBox, { backgroundColor: colors.surface }]}>
+              <Text style={[styles.correctAnswerLabel, { color: colors.textSecondary }]}>Resposta correta:</Text>
               <Text style={styles.correctAnswerValue}>{question.correctAnswer}</Text>
             </View>
           )}
 
           {timedOut && (
-            <View style={styles.correctAnswerBox}>
-              <Text style={styles.correctAnswerLabel}>A resposta era:</Text>
+            <View style={[styles.correctAnswerBox, { backgroundColor: colors.surface }]}>
+              <Text style={[styles.correctAnswerLabel, { color: colors.textSecondary }]}>A resposta era:</Text>
               <Text style={styles.correctAnswerValue}>{question.correctAnswer}</Text>
             </View>
           )}
 
-          <Text style={styles.explanationLabel}>Explicação:</Text>
-          <Text style={styles.feedbackText}>{question.explanation}</Text>
+          <Text style={[styles.explanationLabel, { color: colors.textSecondary }]}>Explicação:</Text>
+          <Text style={[styles.feedbackText, { color: colors.textSecondary }]}>{question.explanation}</Text>
 
-          <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-            <Text style={styles.nextButtonText}>
+          <TouchableOpacity
+            style={[styles.nextButton, { backgroundColor: colors.card, borderColor: colors.primary }]}
+            onPress={handleNext}
+          >
+            <Text style={[styles.nextButtonText, { color: colors.primary }]}>
               {currentIndex + 1 >= questions.length ? 'Ver resultado' : 'Próxima questão'}
             </Text>
-            <Ionicons name="arrow-forward" size={18} color="#6C5CE7" />
+            <Ionicons name="arrow-forward" size={18} color={colors.primary} />
           </TouchableOpacity>
         </View>
       )}
@@ -302,6 +309,7 @@ function ResultScreen({
   onSave: () => void
   onBack: () => void
 }) {
+  const { colors } = useTheme()
   const expectedXp = fallbackXp
 
   useEffect(() => {
@@ -318,18 +326,18 @@ function ResultScreen({
       : 'Continue tentando, você vai melhorar!'
 
   return (
-    <View style={styles.resultContainer}>
-      <Ionicons name="trophy" size={64} color="#6C5CE7" style={{ marginBottom: 16 }} />
-      <Text style={styles.resultTitle}>Parabéns!</Text>
-      <Text style={styles.resultSubtitle}>Você concluiu o módulo</Text>
+    <View style={[styles.resultContainer, { backgroundColor: colors.background }]}>
+      <Ionicons name="trophy" size={64} color={colors.primary} style={{ marginBottom: 16 }} />
+      <Text style={[styles.resultTitle, { color: colors.text }]}>Parabéns!</Text>
+      <Text style={[styles.resultSubtitle, { color: colors.textSecondary }]}>Você concluiu o módulo</Text>
 
-      <View style={styles.resultScoreCard}>
-        <Text style={styles.resultScoreLabel}>Acertos</Text>
-        <Text style={styles.resultScoreValue}>{score}/{total}</Text>
+      <View style={[styles.resultScoreCard, { backgroundColor: colors.card }]}>
+        <Text style={[styles.resultScoreLabel, { color: colors.textSecondary }]}>Acertos</Text>
+        <Text style={[styles.resultScoreValue, { color: colors.primary }]}>{score}/{total}</Text>
       </View>
 
       {savingResult ? (
-        <ActivityIndicator color="#6C5CE7" style={{ marginVertical: 16 }} />
+        <ActivityIndicator color={colors.primary} style={{ marginVertical: 16 }} />
       ) : (
         <View style={styles.xpCard}>
           <Ionicons name="star" size={24} color="#27ae60" />
@@ -337,7 +345,7 @@ function ResultScreen({
         </View>
       )}
 
-      <Text style={styles.resultMessage}>{message}</Text>
+      <Text style={[styles.resultMessage, { color: colors.textSecondary }]}>{message}</Text>
 
       <TouchableOpacity style={styles.primaryButton} onPress={onBack}>
         <Ionicons name="home-outline" size={20} color="#FFF" />

@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { styles } from './quiz.styles'
 import { Question } from '../types/quiz.types'
 import { getQuizQuestions, saveQuizResult } from '../services/quiz.service'
+import { useTheme } from '../../../shared/theme/ThemeContext'
 
 function xpPerQuestion(difficulty: string): number {
   if (difficulty === 'Difícil') return 80
@@ -22,6 +23,7 @@ function xpPerQuestion(difficulty: string): number {
 export function QuizScreen({ navigation, route }: any) {
   const { language, difficulty } = route?.params ?? {}
   const insets = useSafeAreaInsets()
+  const { colors } = useTheme()
 
   const [questions, setQuestions] = useState<Question[]>([])
   const [loading, setLoading] = useState(true)
@@ -80,17 +82,17 @@ export function QuizScreen({ navigation, route }: any) {
 
   if (loading) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#6C5CE7" />
+      <View style={[styles.centered, { backgroundColor: colors.background }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     )
   }
 
   if (error) {
     return (
-      <View style={[styles.centered, { padding: 32 }]}>
-        <Ionicons name="alert-circle-outline" size={48} color="#666" style={{ marginBottom: 16 }} />
-        <Text style={styles.errorText}>{error}</Text>
+      <View style={[styles.centered, { backgroundColor: colors.background, padding: 32 }]}>
+        <Ionicons name="alert-circle-outline" size={48} color={colors.textSecondary} style={{ marginBottom: 16 }} />
+        <Text style={[styles.errorText, { color: colors.textSecondary }]}>{error}</Text>
         <TouchableOpacity style={styles.primaryButton} onPress={() => navigation.goBack()}>
           <Text style={styles.primaryButtonText}>Voltar</Text>
         </TouchableOpacity>
@@ -116,7 +118,7 @@ export function QuizScreen({ navigation, route }: any) {
   const showFeedback = isCorrect !== null
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]} edges={['top']}>
     <ScrollView
       ref={scrollRef}
       style={styles.container}
@@ -125,13 +127,13 @@ export function QuizScreen({ navigation, route }: any) {
     >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#6C5CE7" />
+          <Ionicons name="chevron-back" size={24} color={colors.primary} />
         </TouchableOpacity>
-        <Text style={styles.title}>Quiz de Programação</Text>
-        <Text style={styles.progressText}>
+        <Text style={[styles.title, { color: colors.text }]}>Quiz de Programação</Text>
+        <Text style={[styles.progressText, { color: colors.textSecondary }]}>
           Questão {currentQuestionIndex + 1} de {questions.length}
         </Text>
-        <View style={styles.progressBarContainer}>
+        <View style={[styles.progressBarContainer, { backgroundColor: colors.border }]}>
           <View
             style={[
               styles.progressBar,
@@ -141,9 +143,9 @@ export function QuizScreen({ navigation, route }: any) {
         </View>
       </View>
 
-      <View style={styles.questionCard}>
-        <Text style={styles.questionType}>DESAFIO</Text>
-        <Text style={styles.questionTitle}>{question.title}</Text>
+      <View style={[styles.questionCard, { backgroundColor: colors.card }]}>
+        <Text style={[styles.questionType, { color: colors.textSecondary }]}>DESAFIO</Text>
+        <Text style={[styles.questionTitle, { color: colors.text }]}>{question.title}</Text>
 
         {question.code ? (
           <View style={styles.codeContainer}>
@@ -162,6 +164,7 @@ export function QuizScreen({ navigation, route }: any) {
                 key={option}
                 style={[
                   styles.optionButton,
+                  { backgroundColor: colors.card, borderColor: colors.border },
                   showFeedback && isCorrectOption && styles.optionCorrect,
                   showFeedback && isWrong && styles.optionWrong,
                   !showFeedback && isSelected && styles.optionSelected,
@@ -169,7 +172,7 @@ export function QuizScreen({ navigation, route }: any) {
                 onPress={() => handleSelectOption(option)}
                 disabled={showFeedback}
               >
-                <Text style={styles.optionText}>{option}</Text>
+                <Text style={[styles.optionText, { color: colors.text }]}>{option}</Text>
                 {showFeedback && isCorrectOption && (
                   <Ionicons name="checkmark-circle" size={22} color="#58CC02" style={styles.optionIcon} />
                 )}
@@ -196,20 +199,23 @@ export function QuizScreen({ navigation, route }: any) {
           </View>
 
           {!isCorrect && (
-            <View style={styles.correctAnswerBox}>
-              <Text style={styles.correctAnswerLabel}>Resposta correta:</Text>
-              <Text style={styles.correctAnswerText}>{question.correctAnswer}</Text>
+            <View style={[styles.correctAnswerBox, { backgroundColor: colors.surface }]}>
+              <Text style={[styles.correctAnswerLabel, { color: colors.textSecondary }]}>Resposta correta:</Text>
+              <Text style={[styles.correctAnswerText, { color: colors.text }]}>{question.correctAnswer}</Text>
             </View>
           )}
 
-          <Text style={styles.feedbackExplanationLabel}>Explicação:</Text>
-          <Text style={styles.feedbackText}>{question.explanation}</Text>
+          <Text style={[styles.feedbackExplanationLabel, { color: colors.textSecondary }]}>Explicação:</Text>
+          <Text style={[styles.feedbackText, { color: colors.textSecondary }]}>{question.explanation}</Text>
 
-          <TouchableOpacity style={styles.nextButton} onPress={handleNextQuestion}>
-            <Text style={styles.nextButtonText}>
+          <TouchableOpacity
+            style={[styles.nextButton, { backgroundColor: colors.card, borderColor: colors.primary }]}
+            onPress={handleNextQuestion}
+          >
+            <Text style={[styles.nextButtonText, { color: colors.primary }]}>
               {currentQuestionIndex + 1 >= questions.length ? 'Ver resultado' : 'Próxima questão'}
             </Text>
-            <Ionicons name="arrow-forward" size={18} color="#6C5CE7" />
+            <Ionicons name="arrow-forward" size={18} color={colors.primary} />
           </TouchableOpacity>
         </View>
       )}
@@ -233,6 +239,7 @@ function ResultScreen({
   onXpEarned: (xp: number) => void
   onBack: () => void
 }) {
+  const { colors } = useTheme()
   const [saving, setSaving] = useState(false)
   const expectedXp = score * xpPerQuestion(difficulty)
 
@@ -246,18 +253,18 @@ function ResultScreen({
   }, [])
 
   return (
-    <View style={styles.resultContainer}>
-      <Ionicons name="trophy" size={72} color="#6C5CE7" style={{ marginBottom: 16 }} />
-      <Text style={styles.resultTitle}>Parabéns!</Text>
-      <Text style={styles.resultSubtitle}>Você concluiu o quiz</Text>
+    <View style={[styles.resultContainer, { backgroundColor: colors.background }]}>
+      <Ionicons name="trophy" size={72} color={colors.primary} style={{ marginBottom: 16 }} />
+      <Text style={[styles.resultTitle, { color: colors.text }]}>Parabéns!</Text>
+      <Text style={[styles.resultSubtitle, { color: colors.textSecondary }]}>Você concluiu o quiz</Text>
 
-      <View style={styles.resultScoreCard}>
-        <Text style={styles.resultScoreLabel}>Acertos</Text>
-        <Text style={styles.resultScoreValue}>{score}/{total}</Text>
+      <View style={[styles.resultScoreCard, { backgroundColor: colors.card }]}>
+        <Text style={[styles.resultScoreLabel, { color: colors.textSecondary }]}>Acertos</Text>
+        <Text style={[styles.resultScoreValue, { color: colors.primary }]}>{score}/{total}</Text>
       </View>
 
       {saving ? (
-        <ActivityIndicator color="#6C5CE7" style={{ marginVertical: 16 }} />
+        <ActivityIndicator color={colors.primary} style={{ marginVertical: 16 }} />
       ) : (
         <View style={styles.xpCard}>
           <Ionicons name="star" size={24} color="#27ae60" />
@@ -265,7 +272,7 @@ function ResultScreen({
         </View>
       )}
 
-      <Text style={styles.resultMessage}>
+      <Text style={[styles.resultMessage, { color: colors.textSecondary }]}>
         {score === total
           ? 'Perfeito! Você acertou todas as questões.'
           : score >= total / 2

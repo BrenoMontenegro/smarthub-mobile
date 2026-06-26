@@ -13,6 +13,7 @@ import { styles } from './sortCode.styles'
 import { SortCodeQuestion } from '../types/sortCode.types'
 import { getSortCodeQuestions } from '../services/sortCode.service'
 import { saveQuizResult } from '../../quiz/services/quiz.service'
+import { useTheme } from '../../../shared/theme/ThemeContext'
 
 function xpPerQuestion(difficulty: string): number {
   if (difficulty === 'Difícil') return 80
@@ -23,6 +24,7 @@ function xpPerQuestion(difficulty: string): number {
 export function SortCodeScreen({ navigation, route }: any) {
   const { language, difficulty } = route?.params ?? {}
   const insets = useSafeAreaInsets()
+  const { colors } = useTheme()
 
   const [questions, setQuestions] = useState<SortCodeQuestion[]>([])
   const [loading, setLoading] = useState(true)
@@ -98,18 +100,18 @@ export function SortCodeScreen({ navigation, route }: any) {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#6C5CE7" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     )
   }
 
   if (error) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32 }}>
-        <Text style={{ fontSize: 16, color: '#666', textAlign: 'center', marginBottom: 24 }}>{error}</Text>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background, padding: 32 }}>
+        <Text style={{ fontSize: 16, color: colors.textSecondary, textAlign: 'center', marginBottom: 24 }}>{error}</Text>
         <TouchableOpacity
-          style={{ backgroundColor: '#6C5CE7', paddingVertical: 14, paddingHorizontal: 32, borderRadius: 12 }}
+          style={{ backgroundColor: colors.primary, paddingVertical: 14, paddingHorizontal: 32, borderRadius: 12 }}
           onPress={() => navigation.goBack()}
         >
           <Text style={{ color: '#FFF', fontWeight: '700' }}>Voltar</Text>
@@ -145,7 +147,7 @@ export function SortCodeScreen({ navigation, route }: any) {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]} edges={['top']}>
     <ScrollView
       ref={scrollRef}
       style={styles.container}
@@ -154,32 +156,32 @@ export function SortCodeScreen({ navigation, route }: any) {
     >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color="#6C5CE7" />
+          <Ionicons name="chevron-back" size={24} color={colors.primary} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Código Embaralhado</Text>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Código Embaralhado</Text>
       </View>
 
-      <Text style={styles.progressText}>
+      <Text style={[styles.progressText, { color: colors.textSecondary }]}>
         Desafio {currentIndex + 1} de {questions.length}
       </Text>
 
-      <View style={styles.progressBarBackground}>
+      <View style={[styles.progressBarBackground, { backgroundColor: colors.border }]}>
         <View style={[
           styles.progressBarFill,
           { width: `${((currentIndex + 1) / questions.length) * 100}%` }
         ]} />
       </View>
 
-      <View style={styles.card}>
-        <Text style={styles.sectionTitle}>OBJETIVO</Text>
-        <Text style={styles.questionTitle}>{question.objective}</Text>
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Text style={[styles.sectionTitle, { color: colors.textSecondary }]}>OBJETIVO</Text>
+        <Text style={[styles.questionTitle, { color: colors.text }]}>{question.objective}</Text>
       </View>
 
-      <Text style={styles.label}>Sua ordem:</Text>
+      <Text style={[styles.label, { color: colors.textSecondary }]}>Sua ordem:</Text>
 
-      <View style={styles.orderedContainer}>
+      <View style={[styles.orderedContainer, { backgroundColor: colors.card, borderColor: colors.border }]}>
         {orderedLines.length === 0 && (
-          <Text style={styles.placeholder}>Toque nas linhas abaixo para ordenar</Text>
+          <Text style={[styles.placeholder, { color: colors.textSecondary }]}>Toque nas linhas abaixo para ordenar</Text>
         )}
         {orderedLines.map((line, index) => (
           <TouchableOpacity
@@ -195,16 +197,16 @@ export function SortCodeScreen({ navigation, route }: any) {
         ))}
       </View>
 
-      <Text style={styles.label}>Linhas disponíveis:</Text>
+      <Text style={[styles.label, { color: colors.textSecondary }]}>Linhas disponíveis:</Text>
 
       <View style={styles.availableContainer}>
         {availableLines.map((line, index) => (
           <TouchableOpacity
             key={index}
-            style={styles.availableLine}
+            style={[styles.availableLine, { backgroundColor: colors.card, borderColor: colors.border }]}
             onPress={() => !isChecked && handleAddLine(line)}
           >
-            <Text style={styles.availableLineText}>{line}</Text>
+            <Text style={[styles.availableLineText, { color: colors.text }]}>{line}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -243,13 +245,13 @@ export function SortCodeScreen({ navigation, route }: any) {
           ) : null}
 
           <TouchableOpacity
-            style={[styles.nextButton, { flexDirection: 'row', justifyContent: 'center', gap: 8 }]}
+            style={[styles.nextButton, { flexDirection: 'row', justifyContent: 'center', gap: 8, backgroundColor: colors.card }]}
             onPress={handleNext}
           >
-            <Text style={styles.nextButtonText}>
+            <Text style={[styles.nextButtonText, { color: colors.text }]}>
               {currentIndex + 1 >= questions.length ? 'Ver resultado' : 'Próximo'}
             </Text>
-            <Ionicons name="arrow-forward" size={16} color="#1E1E1E" />
+            <Ionicons name="arrow-forward" size={16} color={colors.text} />
           </TouchableOpacity>
         </View>
       )}
@@ -288,6 +290,7 @@ function ResultScreen({
   onSave: () => void
   onBack: () => void
 }) {
+  const { colors } = useTheme()
   const expectedXp = fallbackXp
 
   useEffect(() => {
@@ -304,21 +307,21 @@ function ResultScreen({
       : 'Continue tentando, você vai melhorar!'
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5F5F5', padding: 32 }}>
-      <Ionicons name="trophy" size={64} color="#6C5CE7" style={{ marginBottom: 16 }} />
-      <Text style={{ fontSize: 24, fontWeight: '700', color: '#111', marginBottom: 4 }}>Parabéns!</Text>
-      <Text style={{ fontSize: 16, color: '#666', marginBottom: 24 }}>Você concluiu o desafio</Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background, padding: 32 }}>
+      <Ionicons name="trophy" size={64} color={colors.primary} style={{ marginBottom: 16 }} />
+      <Text style={{ fontSize: 24, fontWeight: '700', color: colors.text, marginBottom: 4 }}>Parabéns!</Text>
+      <Text style={{ fontSize: 16, color: colors.textSecondary, marginBottom: 24 }}>Você concluiu o desafio</Text>
 
       <View style={{
-        backgroundColor: '#FFF', borderRadius: 16, padding: 20,
-        alignItems: 'center', width: '100%', marginBottom: 16, elevation: 2,
+        backgroundColor: colors.card, borderRadius: 16, padding: 20,
+        alignItems: 'center', width: '100%', marginBottom: 16,
       }}>
-        <Text style={{ fontSize: 14, color: '#666', marginBottom: 4 }}>Acertos</Text>
-        <Text style={{ fontSize: 40, fontWeight: '700', color: '#6C5CE7' }}>{score}/{total}</Text>
+        <Text style={{ fontSize: 14, color: colors.textSecondary, marginBottom: 4 }}>Acertos</Text>
+        <Text style={{ fontSize: 40, fontWeight: '700', color: colors.primary }}>{score}/{total}</Text>
       </View>
 
       {savingResult ? (
-        <ActivityIndicator color="#6C5CE7" style={{ marginVertical: 16 }} />
+        <ActivityIndicator color={colors.primary} style={{ marginVertical: 16 }} />
       ) : (
         <View style={{
           flexDirection: 'row', alignItems: 'center', gap: 8,
@@ -332,13 +335,13 @@ function ResultScreen({
         </View>
       )}
 
-      <Text style={{ fontSize: 15, color: '#666', textAlign: 'center', marginBottom: 32, lineHeight: 22 }}>
+      <Text style={{ fontSize: 15, color: colors.textSecondary, textAlign: 'center', marginBottom: 32, lineHeight: 22 }}>
         {message}
       </Text>
 
       <TouchableOpacity
         style={{
-          backgroundColor: '#6C5CE7', paddingVertical: 14, paddingHorizontal: 32,
+          backgroundColor: colors.primary, paddingVertical: 14, paddingHorizontal: 32,
           borderRadius: 12, flexDirection: 'row', alignItems: 'center', gap: 8,
         }}
         onPress={onBack}

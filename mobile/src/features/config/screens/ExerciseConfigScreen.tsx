@@ -1,77 +1,39 @@
 import React, { useState } from 'react'
-
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native'
-
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
-
 import { styles } from './exerciseConfig.styles'
+import { languages, difficulties } from './exerciseConfig.mock'
+import { useTheme } from '../../../shared/theme/ThemeContext'
 
-import {
-  languages,
-  difficulties,
-} from './exerciseConfig.mock'
-
-export function ExerciseConfigScreen({
-  navigation,
-  route,
-}: any) {
+export function ExerciseConfigScreen({ navigation, route }: any) {
   const { activityType, challenge } = route.params
-
+  const { colors } = useTheme()
   const [selectedLanguage, setSelectedLanguage] = useState<any>(null)
-
-  const [selectedDifficulty, setSelectedDifficulty] =
-    useState('')
+  const [selectedDifficulty, setSelectedDifficulty] = useState('')
 
   function handleStart() {
-    if (!selectedLanguage || !selectedDifficulty) {
-      return
-    }
+    if (!selectedLanguage || !selectedDifficulty) return
 
     if (activityType === 'quiz') {
-      navigation.navigate('Quiz', {
-        language: selectedLanguage,
-        difficulty: selectedDifficulty,
-        challenge,
-      })
+      navigation.navigate('Quiz', { language: selectedLanguage, difficulty: selectedDifficulty, challenge })
     }
-
     if (activityType === 'code-complete') {
-      navigation.navigate('CompleteCode', {
-        language: selectedLanguage,
-        difficulty: selectedDifficulty,
-        challenge,
-      })
+      navigation.navigate('CompleteCode', { language: selectedLanguage, difficulty: selectedDifficulty, challenge })
     }
-
     if (activityType === 'acertar-output') {
-      navigation.navigate('Output', {
-        language: selectedLanguage,
-        difficulty: selectedDifficulty,
-        challenge,
-      })
+      navigation.navigate('Output', { language: selectedLanguage, difficulty: selectedDifficulty, challenge })
     }
-
     if (activityType === 'codigo-embaralhado') {
-      navigation.navigate('SortCode', {
-        language: selectedLanguage,
-        difficulty: selectedDifficulty,
-        challenge,
-      })
+      navigation.navigate('SortCode', { language: selectedLanguage, difficulty: selectedDifficulty, challenge })
     }
   }
 
   return (
     <ScrollView
-      contentContainerStyle={styles.container}
+      style={{ flex: 1, backgroundColor: colors.background }}
+      contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}
     >
-      <Text style={styles.title}>
-        Selecione uma linguagem:
-      </Text>
+      <Text style={[styles.title, { color: colors.text }]}>Selecione uma linguagem:</Text>
 
       <View style={styles.cardsContainer}>
         {languages.map(language => (
@@ -79,32 +41,21 @@ export function ExerciseConfigScreen({
             key={language.id}
             style={[
               styles.card,
-
-              selectedLanguage?.id === language.id &&
-                styles.selectedCard,
+              { backgroundColor: colors.card },
+              selectedLanguage?.id === language.id && styles.selectedCard,
             ]}
-            onPress={() =>
-              setSelectedLanguage(language)
-            }
+            onPress={() => setSelectedLanguage(language)}
           >
             <View style={styles.iconContainer}>
               <Ionicons name={language.icon} size={36} color="#6C63FF" />
             </View>
-
-            <Text style={styles.cardTitle}>
-              {language.name}
-            </Text>
-
-            <Text style={styles.description}>
-              {language.description}
-            </Text>
+            <Text style={[styles.cardTitle, { color: colors.text }]}>{language.name}</Text>
+            <Text style={[styles.description, { color: colors.textSecondary }]}>{language.description}</Text>
           </TouchableOpacity>
         ))}
       </View>
 
-      <Text style={styles.title}>
-        Selecione uma dificuldade:
-      </Text>
+      <Text style={[styles.title, { color: colors.text }]}>Selecione uma dificuldade:</Text>
 
       <View style={styles.difficultyContainer}>
         {difficulties.map(difficulty => (
@@ -112,22 +63,16 @@ export function ExerciseConfigScreen({
             key={difficulty}
             style={[
               styles.difficultyButton,
-
-              selectedDifficulty === difficulty &&
-                styles.selectedDifficulty,
+              { backgroundColor: colors.card },
+              selectedDifficulty === difficulty && styles.selectedDifficulty,
             ]}
-            onPress={() =>
-              setSelectedDifficulty(difficulty)
-            }
+            onPress={() => setSelectedDifficulty(difficulty)}
           >
-            <Text
-              style={[
-                styles.difficultyText,
-
-                selectedDifficulty === difficulty &&
-                  styles.selectedDifficultyText,
-              ]}
-            >
+            <Text style={[
+              styles.difficultyText,
+              { color: colors.text },
+              selectedDifficulty === difficulty && styles.selectedDifficultyText,
+            ]}>
               {difficulty}
             </Text>
           </TouchableOpacity>
@@ -135,12 +80,10 @@ export function ExerciseConfigScreen({
       </View>
 
       <TouchableOpacity
-        style={styles.startButton}
+        style={[styles.startButton, { backgroundColor: colors.primary }]}
         onPress={handleStart}
       >
-        <Text style={styles.startButtonText}>
-          Iniciar
-        </Text>
+        <Text style={[styles.startButtonText, { color: '#FFF' }]}>Iniciar</Text>
       </TouchableOpacity>
     </ScrollView>
   )
