@@ -6,8 +6,6 @@ O projeto utiliza:
 
 * **React Native** no desenvolvimento mobile
 * **Spring Boot (Java)** no backend
-* Integração com **API Gemini** para recursos inteligentes
-* Feedback interativo por áudio
 * Sistema de desafios progressivos e aprendizado prático
 
 A proposta da aplicação é tornar o aprendizado de lógica e programação mais acessível, dinâmico e motivador, utilizando elementos de jogos como:
@@ -31,15 +29,13 @@ Tecnologias utilizadas:
 * TypeScript
 * React Navigation
 * Context API / gerenciamento de estado
-* Expo (caso utilizado)
+* Expo 
 
 Responsabilidades:
 
 * Interface mobile
 * Sistema gamificado
 * Execução dos exercícios
-* Captura de câmera
-* Reprodução de áudio
 * Comunicação com API backend
 
 ---
@@ -98,80 +94,6 @@ O sistema fornece correção e feedback imediato para reforçar o aprendizado.
 
 ---
 
-# 🎤 Feedback por Áudio
-
-Uma das funcionalidades centrais da plataforma é o sistema de feedback em áudio.
-
-## Objetivo
-
-Melhorar a experiência do usuário através de respostas mais interativas e acessíveis.
-
-## Funcionalidades
-
-* Reprodução de feedback positivo ou corretivo
-* Narração de explicações
-* Incentivo durante os desafios
-* Respostas auditivas em tempo real
-
-## Exemplos de Uso
-
-* Quando o usuário acerta um desafio
-* Quando o usuário comete erros
-* Durante explicações de conceitos
-* Em dicas automáticas da plataforma
-
-## Benefícios
-
-* Maior imersão
-* Aprendizado mais dinâmico
-* Melhor acessibilidade
-* Engajamento semelhante a aplicativos educacionais modernos
-
----
-
-# Integração com API Gemini
-
-A aplicação utiliza a API Gemini para recursos inteligentes relacionados à análise de código e interpretação de imagens.
-
----
-
-## Acesso à Câmera
-
-O aplicativo permite utilizar a câmera do dispositivo para capturar códigos escritos ou exercícios.
-
-### Funcionalidades
-
-* Captura de imagens de códigos
-* Upload automático para análise
-* Leitura de trechos de programação
-* Interpretação via IA
-
----
-
-## Análise Inteligente de Código
-
-Após a captura da imagem, a API Gemini é utilizada para:
-
-* Interpretar o código enviado
-* Identificar erros de sintaxe
-* Detectar problemas lógicos
-* Gerar feedback automático
-* Explicar conceitos de programação
-* Sugerir melhorias
-
----
-
-## 🔄 Fluxo da Funcionalidade
-
-1. Usuário captura imagem do código
-2. React Native envia imagem ao backend
-3. Backend processa a requisição
-4. API Gemini realiza análise
-5. Resultado é retornado ao aplicativo
-6. Usuário recebe feedback textual e/ou em áudio
-
----
-
 # 🔐 Segurança
 
 O backend utiliza práticas modernas de segurança:
@@ -193,21 +115,7 @@ Exemplos de telas da aplicação:
 * Lista de desafios
 * Ranking de usuários
 * Perfil e progresso
-* Tela de câmera
-* Tela de feedback da IA
-
----
-
-# 🔌 Integrações
-
-## API Gemini
-
-Responsável por:
-
-* Interpretação de imagens
-* Análise de código
-* Feedback inteligente
-* Explicações automáticas
+* Tela de feedback 
 
 ---
 
@@ -253,7 +161,7 @@ O projeto busca:
 
 # 📄 Licença
 
-Este projeto possui finalidade educacional e acadêmica.
+Este projeto possui finalidade educacional e acadêmica para a disciplina de Programação Mobile.
 
 ---
 
