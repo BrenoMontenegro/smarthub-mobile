@@ -1,13 +1,7 @@
 import React from 'react'
-
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native'
-
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { useTheme } from '../../../shared/theme/ThemeContext'
 
 interface Props {
   title: string
@@ -29,89 +23,80 @@ export function ChallengeCard({
   color,
   onPress,
 }: Props) {
+  const { colors } = useTheme()
+
   return (
-    <TouchableOpacity 
-      style={styles.card}
+    <TouchableOpacity
+      style={[styles.card, { backgroundColor: colors.card }]}
       activeOpacity={0.8}
       onPress={onPress}
     >
-      <View
-        style={[
-          styles.iconContainer,
-          { backgroundColor: color },
-        ]}
-      >
-        <Ionicons
-          name={icon}
-          size={24}
-          color="#111"
-        />
+      <View style={[styles.iconContainer, { backgroundColor: color }]}>
+        <Ionicons name={icon} size={28} color="#111" />
       </View>
 
-      <Text style={styles.title}>
-        {title}
-      </Text>
+      <View style={styles.content}>
+        <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
+        <Text style={[styles.description, { color: colors.textSecondary }]}>{description}</Text>
 
-      <Text style={styles.description}>
-        {description}
-      </Text>
-
-      <View style={styles.footer}>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>
-            {difficulty}
-          </Text>
+        <View style={styles.footer}>
+          <View style={[styles.badge, { backgroundColor: colors.border }]}>
+            <Text style={[styles.badgeText, { color: colors.textSecondary }]}>{difficulty}</Text>
+          </View>
+          <Text style={[styles.xp, { color: colors.primary }]}>+{xp} XP</Text>
         </View>
-
-        <Text style={styles.xp}>
-          +{xp} XP
-        </Text>
       </View>
+
+      <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
     </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#FFF',
     borderRadius: 20,
     padding: 16,
-    marginBottom: 16,
-    elevation: 2,
+    marginBottom: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    elevation: 0,
   },
 
   iconContainer: {
-    width: 56,
-    height: 56,
+    width: 64,
+    height: 64,
     borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 18,
+    flexShrink: 0,
+  },
+
+  content: {
+    flex: 1,
   },
 
   title: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#111',
-    marginBottom: 8,
+    marginBottom: 4,
   },
 
   description: {
     fontSize: 12,
-    color: '#666',
-    marginBottom: 18,
+    marginBottom: 10,
+    lineHeight: 17,
   },
 
   footer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 10,
   },
 
   badge: {
-    backgroundColor: '#F3F3F3',
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 4,
     borderRadius: 999,
   },
 
@@ -122,7 +107,6 @@ const styles = StyleSheet.create({
 
   xp: {
     fontWeight: '700',
-    color: '#6C5CE7',
     fontSize: 12,
   },
 })

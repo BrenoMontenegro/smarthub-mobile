@@ -56,7 +56,7 @@ public class DataSeeder implements CommandLineRunner {
         challengeRepository.saveAll(List.of(
             Challenge.builder()
                 .title("Quiz Interativo")
-                .description("Responda perguntas de múltipla escolha sobre programação")
+                .description("Responda perguntas de múltipla escolha")
                 .xp(120).difficulty("6 atividades")
                 .icon("help-circle-outline").color("#ECE9F8")
                 .type("quiz").displayOrder(1).build(),

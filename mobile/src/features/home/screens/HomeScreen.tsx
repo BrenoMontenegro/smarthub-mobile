@@ -114,27 +114,23 @@ export function HomeScreen({ navigation }: any) {
         <FlatList
           data={challenges}
           keyExtractor={(item) => item.id}
-          numColumns={2}
-          columnWrapperStyle={styles.cardsContainer}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <View style={{ width: '48%' }}>
-              <ChallengeCard
-                title={item.title}
-                description={item.description}
-                xp={item.xp}
-                difficulty={item.difficulty}
-                icon={item.icon}
-                color={item.color}
-                type={item.type}
-                onPress={() => {
-                  navigation.navigate('ExerciseConfig', {
-                    activityType: item.type,
-                    challenge: item,
-                  })
-                }}
-              />
-            </View>
+            <ChallengeCard
+              title={item.title}
+              description={item.description}
+              xp={item.xp}
+              difficulty={item.difficulty}
+              icon={item.icon}
+              color={item.color}
+              type={item.type}
+              onPress={() => {
+                navigation.navigate('ExerciseConfig', {
+                  activityType: item.type,
+                  challenge: item,
+                })
+              }}
+            />
           )}
         />
       </View>
