@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { playCorrectSound, playWrongSound } from '../../../shared/utils/sound'
 import { Ionicons } from '@expo/vector-icons'
 import { styles } from './output.styles'
 import { OutputQuestion } from '../types/output.types'
@@ -88,7 +89,12 @@ export function OutputScreen({ navigation, route }: any) {
     const correct = option === question.correctAnswer
     setSelectedOption(option)
     setIsCorrect(correct)
-    if (correct) setScore(prev => prev + 1)
+    if (correct) {
+      setScore(prev => prev + 1)
+      playCorrectSound()
+    } else {
+      playWrongSound()
+    }
   }
 
   function handleNext() {
