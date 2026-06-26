@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator, ScrollView, Image } from 'react-native'
 import { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { signIn, getAuthErrorMessage, formatAuthErrorDebug } from '../../../shared/services/auth.service'
@@ -32,7 +32,13 @@ export default function SignInScreen({ navigation }: any) {
   return (
     <View style={styles.container}>
 
-      <Text style={styles.title}>Sign In</Text>
+      <Image
+        source={require('../../../../assets/logo.png')}
+        style={styles.logo}
+        resizeMode="contain"
+      />
+
+      <Text style={styles.title}>Login</Text>
 
       <View style={styles.inputContainer}>
         <Ionicons name="person-outline" size={20} color="#aaa" />
@@ -48,19 +54,11 @@ export default function SignInScreen({ navigation }: any) {
       <View style={styles.inputContainer}>
         <Ionicons name="key-outline" size={20} color="#aaa" />
         <TextInput
-          placeholder="Password"
+          placeholder="Senha"
           secureTextEntry
           style={styles.input}
           onChangeText={setPassword}
         />
-      </View>
-
-      <View style={styles.options}>
-        <View style={styles.remember}>
-          <View style={styles.checkbox} />
-          <Text style={styles.rememberText}>Remember me</Text>
-        </View>
-        <Text style={styles.forgot}>Forgot Password</Text>
       </View>
 
       {error ? (
@@ -71,21 +69,9 @@ export default function SignInScreen({ navigation }: any) {
 
       <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loading}>
         {loading
-          ? <ActivityIndicator color="#333" />
-          : <Text style={styles.buttonText}>Login</Text>}
+          ? <ActivityIndicator color="#FFF" />
+          : <Text style={styles.buttonText}>Entrar</Text>}
       </TouchableOpacity>
-
-      <Text style={styles.or}>- OR -</Text>
-      <Text style={styles.socialText}>Sign in with</Text>
-
-      <View style={styles.socialContainer}>
-        <View style={styles.socialButton}>
-          <Text style={{ fontWeight: 'bold' }}>f</Text>
-        </View>
-        <View style={styles.socialButton}>
-          <Text style={{ fontWeight: 'bold' }}>G</Text>
-        </View>
-      </View>
 
       <Text style={styles.footer}>
         Não possui uma conta?{' '}
@@ -101,15 +87,22 @@ export default function SignInScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 25,
+    paddingHorizontal: 25,
+    paddingTop: 8,
     backgroundColor: '#fff',
-    justifyContent: 'center'
+  },
+  logo: {
+    width: 280,
+    height: 280,
+    alignSelf: 'center',
+    marginBottom: -20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     textAlign: 'center',
-    marginBottom: 30,
-    fontWeight: '500'
+    marginBottom: 12,
+    fontWeight: '700',
+    color: '#1E1E1E',
   },
   inputContainer: {
     flexDirection: 'row',
@@ -118,35 +111,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 12,
     height: 50,
-    marginBottom: 15
+    marginBottom: 15,
   },
   input: {
     flex: 1,
-    marginLeft: 10
-  },
-  options: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20
-  },
-  remember: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  checkbox: {
-    width: 14,
-    height: 14,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginRight: 5
-  },
-  rememberText: {
-    fontSize: 12,
-    color: '#555'
-  },
-  forgot: {
-    fontSize: 12,
-    color: '#555'
+    marginLeft: 10,
   },
   errorBox: {
     maxHeight: 160,
@@ -164,46 +133,25 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   button: {
-    backgroundColor: '#ddd',
+    backgroundColor: '#6C5CE7',
     height: 50,
     borderRadius: 25,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 24,
   },
   buttonText: {
-    color: '#333',
-    fontWeight: '500'
-  },
-  or: {
-    textAlign: 'center',
-    marginVertical: 15,
-    color: '#888'
-  },
-  socialText: {
-    textAlign: 'center',
-    marginBottom: 10,
-    color: '#666'
-  },
-  socialContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 15,
-    marginBottom: 20
-  },
-  socialButton: {
-    width: 45,
-    height: 45,
-    backgroundColor: '#eee',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center'
+    color: '#FFF',
+    fontWeight: '700',
+    fontSize: 16,
   },
   footer: {
     textAlign: 'center',
-    fontSize: 12,
-    color: '#666'
+    fontSize: 13,
+    color: '#666',
   },
   link: {
-    fontWeight: 'bold'
-  }
+    fontWeight: '700',
+    color: '#6C5CE7',
+  },
 })
