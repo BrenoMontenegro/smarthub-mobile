@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { playCorrectSound, playWrongSound } from '../../../shared/utils/sound'
 import { Ionicons } from '@expo/vector-icons'
 import { styles } from './quiz.styles'
 import { Question } from '../types/quiz.types'
@@ -62,7 +63,12 @@ export function QuizScreen({ navigation, route }: any) {
     const correct = option === question.correctAnswer
     setSelectedOption(option)
     setIsCorrect(correct)
-    if (correct) setScore(prev => prev + 1)
+    if (correct) {
+      setScore(prev => prev + 1)
+      playCorrectSound()
+    } else {
+      playWrongSound()
+    }
   }
 
   function handleNextQuestion() {

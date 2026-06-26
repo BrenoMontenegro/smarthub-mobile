@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { playCorrectSound, playWrongSound } from '../../../shared/utils/sound'
 import { Ionicons } from '@expo/vector-icons'
 import { styles } from './sortCode.styles'
 import { SortCodeQuestion } from '../types/sortCode.types'
@@ -75,7 +76,12 @@ export function SortCodeScreen({ navigation, route }: any) {
     const correct = JSON.stringify(orderedLines) === JSON.stringify(question.correctOrder)
     setIsCorrect(correct)
     setIsChecked(true)
-    if (correct) setScore(prev => prev + 1)
+    if (correct) {
+      setScore(prev => prev + 1)
+      playCorrectSound()
+    } else {
+      playWrongSound()
+    }
   }
 
   function handleNext() {

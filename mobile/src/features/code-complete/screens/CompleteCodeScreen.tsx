@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native'
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { playCorrectSound, playWrongSound } from '../../../shared/utils/sound'
 import { Ionicons } from '@expo/vector-icons'
 import { styles } from './completeCode.styles'
 import { CodeCompleteQuestion } from '../types/codeComplete.types'
@@ -66,7 +67,12 @@ export function CompleteCodeScreen({ navigation, route }: any) {
     const correct = selectedOption === question.correctAnswer
     setIsCorrect(correct)
     setIsChecked(true)
-    if (correct) setScore(prev => prev + 1)
+    if (correct) {
+      setScore(prev => prev + 1)
+      playCorrectSound()
+    } else {
+      playWrongSound()
+    }
   }
 
   function handleNext() {
