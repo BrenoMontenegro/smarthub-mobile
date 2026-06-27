@@ -7,6 +7,23 @@ export const styles = StyleSheet.create({
     padding: 20,
   },
 
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 8,
+  },
+
+  backButton: {
+    padding: 4,
+  },
+
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    flexShrink: 1,
+  },
+
   title: {
     fontSize: 18,
     fontWeight: 'bold',

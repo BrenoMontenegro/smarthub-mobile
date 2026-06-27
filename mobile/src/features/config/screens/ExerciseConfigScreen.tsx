@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { styles } from './exerciseConfig.styles'
 import { languages, difficulties } from './exerciseConfig.mock'
@@ -29,10 +30,18 @@ export function ExerciseConfigScreen({ navigation, route }: any) {
   }
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top']}>
     <ScrollView
-      style={{ flex: 1, backgroundColor: colors.background }}
+      style={{ flex: 1 }}
       contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}
     >
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="chevron-back" size={24} color={colors.primary} />
+        </TouchableOpacity>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>{challenge?.title ?? 'Configurar exercício'}</Text>
+      </View>
+
       <Text style={[styles.title, { color: colors.text }]}>Selecione uma linguagem:</Text>
 
       <View style={styles.cardsContainer}>
@@ -86,5 +95,6 @@ export function ExerciseConfigScreen({ navigation, route }: any) {
         <Text style={[styles.startButtonText, { color: '#FFF' }]}>Iniciar</Text>
       </TouchableOpacity>
     </ScrollView>
+    </SafeAreaView>
   )
 }
