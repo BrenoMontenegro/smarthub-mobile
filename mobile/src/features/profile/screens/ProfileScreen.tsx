@@ -6,15 +6,18 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Image,
 } from 'react-native'
 
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useFocusEffect } from '@react-navigation/native'
 import { Ionicons } from '@expo/vector-icons'
+import * as ImagePicker from 'expo-image-picker'
 
 import { styles } from './profile.style'
 import { getUserProfile, UserProfile } from '../../../shared/services/user.service'
 import { signOut } from '../../../shared/services/auth.service'
+import { storage } from '../../../shared/utils/storage'
 import { BottomNav } from '../../../shared/components/BottomNav'
 import { useTheme } from '../../../shared/theme/ThemeContext'
 
@@ -29,16 +32,37 @@ export function ProfileScreen({ navigation }: any) {
   const { colors } = useTheme()
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
+  const [avatarUri, setAvatarUri] = useState<string | null>(null)
 
   useFocusEffect(
     useCallback(() => {
       setLoading(true)
-      getUserProfile()
-        .then(setUserProfile)
+      Promise.all([
+        getUserProfile(),
+        storage.getAvatar(),
+      ])
+        .then(([profile, avatar]) => {
+          setUserProfile(profile)
+          setAvatarUri(avatar)
+        })
         .catch(() => {})
         .finally(() => setLoading(false))
     }, []),
   )
+
+  async function handlePickAvatar() {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    })
+    if (!result.canceled) {
+      const uri = result.assets[0].uri
+      await storage.saveAvatar(uri)
+      setAvatarUri(uri)
+    }
+  }
 
   async function handleLogout() {
     await signOut()
@@ -135,9 +159,18 @@ export function ProfileScreen({ navigation }: any) {
         </View>
 
         <View style={styles.profileContainer}>
-          <View style={[styles.avatarInitial, { backgroundColor: colors.avatarBg }]}>
-            <Ionicons name="person" size={48} color={colors.avatarIcon} />
-          </View>
+          <TouchableOpacity onPress={handlePickAvatar} style={styles.avatarWrapper}>
+            {avatarUri ? (
+              <Image source={{ uri: avatarUri }} style={styles.avatarInitial} />
+            ) : (
+              <View style={[styles.avatarInitial, { backgroundColor: colors.avatarBg }]}>
+                <Ionicons name="person" size={48} color={colors.avatarIcon} />
+              </View>
+            )}
+            <View style={[styles.avatarCameraIcon, { backgroundColor: colors.primary }]}>
+              <Ionicons name="camera" size={14} color="#FFF" />
+            </View>
+          </TouchableOpacity>
 
           {loading ? (
             <ActivityIndicator color={colors.primary} style={{ marginVertical: 12 }} />

@@ -21,7 +21,7 @@ function xpPerQuestion(difficulty: string): number {
 }
 
 export function QuizScreen({ navigation, route }: any) {
-  const { language, difficulty } = route?.params ?? {}
+  const { language, difficulty, challenge } = route?.params ?? {}
   const insets = useSafeAreaInsets()
   const { colors } = useTheme()
 
@@ -111,6 +111,7 @@ export function QuizScreen({ navigation, route }: any) {
         xpEarned={xpEarned}
         onXpEarned={setXpEarned}
         onBack={() => navigation.navigate('Home')}
+        onPlayAgain={() => navigation.navigate('ExerciseConfig', { activityType: challenge?.type, challenge })}
       />
     )
   }
@@ -231,6 +232,7 @@ function ResultScreen({
   xpEarned,
   onXpEarned,
   onBack,
+  onPlayAgain,
 }: {
   score: number
   total: number
@@ -238,6 +240,7 @@ function ResultScreen({
   xpEarned: number | null
   onXpEarned: (xp: number) => void
   onBack: () => void
+  onPlayAgain: () => void
 }) {
   const { colors } = useTheme()
   const [saving, setSaving] = useState(false)
@@ -280,9 +283,14 @@ function ResultScreen({
           : 'Continue tentando — cada quiz te deixa mais preparado.'}
       </Text>
 
-      <TouchableOpacity style={styles.primaryButton} onPress={onBack}>
-        <Ionicons name="home-outline" size={20} color="#FFF" />
-        <Text style={styles.primaryButtonText}>Voltar ao início</Text>
+      <TouchableOpacity style={styles.primaryButton} onPress={onPlayAgain}>
+        <Ionicons name="refresh-outline" size={20} color="#FFF" />
+        <Text style={styles.primaryButtonText}>Jogar de novo</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={[styles.primaryButton, { backgroundColor: colors.surface, marginTop: 12 }]} onPress={onBack}>
+        <Ionicons name="home-outline" size={20} color={colors.primary} />
+        <Text style={[styles.primaryButtonText, { color: colors.primary }]}>Voltar ao início</Text>
       </TouchableOpacity>
     </View>
   )

@@ -26,12 +26,29 @@ export const styles = StyleSheet.create({
     marginBottom: 25,
   },
 
+  avatarWrapper: {
+    position: 'relative',
+  },
+
   avatarInitial: {
     width: 100,
     height: 100,
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  avatarCameraIcon: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FFF',
   },
 
   username: {

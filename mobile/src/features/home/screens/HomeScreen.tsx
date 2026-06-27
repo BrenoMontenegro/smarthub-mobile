@@ -5,6 +5,7 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
+  Image,
 } from 'react-native'
 
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -16,6 +17,7 @@ import { Challenge } from './home.types'
 import { ChallengeCard } from '../components/ChallengeCard'
 import { getChallenges } from '../../../shared/services/home.service'
 import { getUserProfile, UserProfile } from '../../../shared/services/user.service'
+import { storage } from '../../../shared/utils/storage'
 import { BottomNav } from '../../../shared/components/BottomNav'
 import { useTheme } from '../../../shared/theme/ThemeContext'
 
@@ -39,6 +41,7 @@ export function HomeScreen({ navigation }: any) {
   const { colors } = useTheme()
   const [challenges, setChallenges] = useState<Challenge[]>([])
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
+  const [avatarUri, setAvatarUri] = useState<string | null>(null)
   const [error, setError] = useState('')
 
   useFocusEffect(
@@ -49,12 +52,14 @@ export function HomeScreen({ navigation }: any) {
 
   async function loadData() {
     try {
-      const [challengeData, profileData] = await Promise.all([
+      const [challengeData, profileData, avatar] = await Promise.all([
         getChallenges(),
         getUserProfile(),
+        storage.getAvatar(),
       ])
       setChallenges(challengeData)
       setUserProfile(profileData)
+      setAvatarUri(avatar)
       setError('')
     } catch {
       setError('Não foi possível carregar os dados.')
@@ -70,9 +75,16 @@ export function HomeScreen({ navigation }: any) {
       <View style={[styles.header, { backgroundColor: colors.headerBg }]}>
         <View style={styles.userRow}>
           <View style={styles.userInfo}>
-            <View style={[styles.avatarInitial, { backgroundColor: colors.avatarBg }]}>
-              <Ionicons name="person" size={28} color={colors.avatarIcon} />
-            </View>
+            {avatarUri ? (
+              <Image
+                source={{ uri: avatarUri }}
+                style={[styles.avatarInitial, { borderRadius: 27 }]}
+              />
+            ) : (
+              <View style={[styles.avatarInitial, { backgroundColor: colors.avatarBg }]}>
+                <Ionicons name="person" size={28} color={colors.avatarIcon} />
+              </View>
+            )}
 
             <View>
               <Text style={[styles.greeting, { color: colors.headerSubtext }]}>Olá de volta,</Text>

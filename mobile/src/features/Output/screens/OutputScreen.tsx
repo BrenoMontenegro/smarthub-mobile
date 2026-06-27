@@ -18,7 +18,7 @@ import { useTheme } from '../../../shared/theme/ThemeContext'
 const TIMER_SECONDS = 30
 
 export function OutputScreen({ navigation, route }: any) {
-  const { language, difficulty } = route?.params ?? {}
+  const { language, difficulty, challenge } = route?.params ?? {}
   const insets = useSafeAreaInsets()
   const { colors } = useTheme()
 
@@ -154,6 +154,7 @@ export function OutputScreen({ navigation, route }: any) {
           }
         }}
         onBack={() => navigation.navigate('Home')}
+        onPlayAgain={() => navigation.navigate('ExerciseConfig', { activityType: challenge?.type, challenge })}
       />
     )
   }
@@ -300,6 +301,7 @@ function ResultScreen({
   savingResult,
   onSave,
   onBack,
+  onPlayAgain,
 }: {
   score: number
   total: number
@@ -308,6 +310,7 @@ function ResultScreen({
   savingResult: boolean
   onSave: () => void
   onBack: () => void
+  onPlayAgain: () => void
 }) {
   const { colors } = useTheme()
   const expectedXp = fallbackXp
@@ -347,9 +350,14 @@ function ResultScreen({
 
       <Text style={[styles.resultMessage, { color: colors.textSecondary }]}>{message}</Text>
 
-      <TouchableOpacity style={styles.primaryButton} onPress={onBack}>
-        <Ionicons name="home-outline" size={20} color="#FFF" />
-        <Text style={styles.primaryButtonText}>Voltar ao início</Text>
+      <TouchableOpacity style={styles.primaryButton} onPress={onPlayAgain}>
+        <Ionicons name="refresh-outline" size={20} color="#FFF" />
+        <Text style={styles.primaryButtonText}>Jogar de novo</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={[styles.primaryButton, { backgroundColor: colors.surface, marginTop: 12 }]} onPress={onBack}>
+        <Ionicons name="home-outline" size={20} color={colors.primary} />
+        <Text style={[styles.primaryButtonText, { color: colors.primary }]}>Voltar ao início</Text>
       </TouchableOpacity>
     </View>
   )

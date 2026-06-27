@@ -22,7 +22,7 @@ function xpPerQuestion(difficulty: string): number {
 }
 
 export function SortCodeScreen({ navigation, route }: any) {
-  const { language, difficulty } = route?.params ?? {}
+  const { language, difficulty, challenge } = route?.params ?? {}
   const insets = useSafeAreaInsets()
   const { colors } = useTheme()
 
@@ -142,6 +142,7 @@ export function SortCodeScreen({ navigation, route }: any) {
           }
         }}
         onBack={() => navigation.navigate('Home')}
+        onPlayAgain={() => navigation.navigate('ExerciseConfig', { activityType: challenge?.type, challenge })}
       />
     )
   }
@@ -281,6 +282,7 @@ function ResultScreen({
   savingResult,
   onSave,
   onBack,
+  onPlayAgain,
 }: {
   score: number
   total: number
@@ -289,6 +291,7 @@ function ResultScreen({
   savingResult: boolean
   onSave: () => void
   onBack: () => void
+  onPlayAgain: () => void
 }) {
   const { colors } = useTheme()
   const expectedXp = fallbackXp
@@ -344,10 +347,21 @@ function ResultScreen({
           backgroundColor: colors.primary, paddingVertical: 14, paddingHorizontal: 32,
           borderRadius: 12, flexDirection: 'row', alignItems: 'center', gap: 8,
         }}
+        onPress={onPlayAgain}
+      >
+        <Ionicons name="refresh-outline" size={20} color="#FFF" />
+        <Text style={{ color: '#FFF', fontWeight: '700', fontSize: 16 }}>Jogar de novo</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={{
+          backgroundColor: colors.surface, paddingVertical: 14, paddingHorizontal: 32,
+          borderRadius: 12, flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 12,
+        }}
         onPress={onBack}
       >
-        <Ionicons name="home-outline" size={20} color="#FFF" />
-        <Text style={{ color: '#FFF', fontWeight: '700', fontSize: 16 }}>Voltar ao início</Text>
+        <Ionicons name="home-outline" size={20} color={colors.primary} />
+        <Text style={{ color: colors.primary, fontWeight: '700', fontSize: 16 }}>Voltar ao início</Text>
       </TouchableOpacity>
     </View>
   )
