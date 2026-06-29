@@ -94,6 +94,42 @@ O sistema fornece correção e feedback imediato para reforçar o aprendizado.
 
 ---
 
+## 🔊 Feedback Sonoro
+
+A aplicação conta com um sistema de feedback auditivo que utiliza a caixa de som do smartphone para reforçar a experiência de aprendizado e aumentar o engajamento do usuário.
+
+### Como funciona: 
+
+- Durante a resolução dos desafios, o aplicativo reproduz sons diferentes para indicar o resultado da ação do usuário:
+
+- Resposta correta: reprodução de um som positivo de confirmação.
+
+- Resposta incorreta: reprodução de um som de erro/alerta.
+
+- Conclusão de desafio: som de conquista e progresso.
+
+- Ganhos de XP e recompensas: efeitos sonoros de recompensa.
+
+- Objetivos da funcionalidade
+
+- Fornecer feedback imediato ao usuário.
+
+- Reforçar o aprendizado através de estímulos auditivos.
+
+- Tornar a experiência mais imersiva e gamificada.
+
+- Aumentar o engajamento durante os estudos.
+
+### Tecnologia Utilizada:
+
+No frontend em React Native, a reprodução de áudio pode ser implementada utilizando bibliotecas compatíveis com o ecossistema Expo, permitindo acesso simples aos recursos de som do dispositivo móvel.
+
+### Benefício para o usuário
+
+O feedback sonoro ajuda o usuário a identificar rapidamente acertos e erros sem depender apenas de elementos visuais, tornando o processo de aprendizado mais intuitivo e dinâmico.
+
+---
+
 # 🔐 Segurança
 
 O backend utiliza práticas modernas de segurança:
@@ -146,10 +182,6 @@ O projeto busca:
 * Spring Boot
 * Spring Security
 * JPA/Hibernate
-
-## Inteligência Artificial
-
-* Google Gemini API
 
 ---
 
