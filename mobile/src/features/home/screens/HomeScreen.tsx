@@ -79,9 +79,10 @@ export function HomeScreen({ navigation }: any) {
               <Image
                 source={{ uri: avatarUri }}
                 style={[styles.avatarInitial, { borderRadius: 27 }]}
+                onError={() => setAvatarUri(null)}
               />
             ) : (
-              <View style={[styles.avatarInitial, { backgroundColor: colors.avatarBg }]}>
+              <View style={[styles.avatarInitial, { backgroundColor: colors.avatarBg, borderWidth: 2, borderColor: 'rgba(255,255,255,0.6)' }]}>
                 <Ionicons name="person" size={28} color={colors.avatarIcon} />
               </View>
             )}

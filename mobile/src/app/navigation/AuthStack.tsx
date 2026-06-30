@@ -11,7 +11,6 @@ import { EditProfileScreen } from '../../features/profile/screens/EditProfileScr
 import { SecurityScreen } from '../../features/profile/screens/SecurityScreen'
 import { ThemeSettingsScreen } from '../../features/profile/screens/ThemeSettingsScreen'
 import { InfoScreen } from '../../features/profile/screens/InfoScreen'
-import { CameraExerciseScreen } from '../../features/camera/screens/CameraExerciseScreen'
 import { OutputScreen } from '../../features/Output/screens/OutputScreen'
 import { SortCodeScreen } from '../../features/sort-code/screens/SortCodeScreen'
 const Stack = createNativeStackNavigator()
@@ -31,7 +30,6 @@ export default function AuthStack() {
       <Stack.Screen name="Security" component={SecurityScreen} />
       <Stack.Screen name="ThemeSettings" component={ThemeSettingsScreen} />
       <Stack.Screen name="Info" component={InfoScreen} />
-      <Stack.Screen name="CameraExercises" component={CameraExerciseScreen} />
       <Stack.Screen name="Output" component={OutputScreen} />
       <Stack.Screen name="SortCode" component={SortCodeScreen} />
     </Stack.Navigator>

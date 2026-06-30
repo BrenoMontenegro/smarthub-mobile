@@ -3,7 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons'
 import { useTheme } from '../theme/ThemeContext'
 
-type NavRoute = 'Home' | 'CameraExercises' | 'Profile'
+type NavRoute = 'Home' | 'Profile'
 
 interface BottomNavProps {
   navigation: any
@@ -16,7 +16,6 @@ export function BottomNav({ navigation, currentRoute }: BottomNavProps) {
 
   const items: { route: NavRoute; icon: keyof typeof Ionicons.glyphMap; label: string }[] = [
     { route: 'Home', icon: 'home', label: 'Home' },
-    { route: 'CameraExercises', icon: 'camera', label: 'Câmera' },
     { route: 'Profile', icon: 'person', label: 'Perfil' },
   ]
 
@@ -41,7 +40,7 @@ export function BottomNav({ navigation, currentRoute }: BottomNavProps) {
           >
             <Ionicons
               name={item.icon}
-              size={28}
+              size={30}
               color={active ? colors.primary : colors.bottomNavInactive}
             />
             <Text
@@ -62,7 +61,7 @@ export function BottomNav({ navigation, currentRoute }: BottomNavProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     paddingTop: 12,
     borderTopWidth: 1,
@@ -70,6 +69,7 @@ const styles = StyleSheet.create({
   navButton: {
     alignItems: 'center',
     justifyContent: 'center',
+    flex: 1,
   },
   navText: {
     marginTop: 4,

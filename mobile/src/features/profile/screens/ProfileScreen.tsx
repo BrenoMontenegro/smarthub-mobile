@@ -161,9 +161,9 @@ export function ProfileScreen({ navigation }: any) {
         <View style={styles.profileContainer}>
           <TouchableOpacity onPress={handlePickAvatar} style={styles.avatarWrapper}>
             {avatarUri ? (
-              <Image source={{ uri: avatarUri }} style={styles.avatarInitial} />
+              <Image source={{ uri: avatarUri }} style={styles.avatarInitial} onError={() => setAvatarUri(null)} />
             ) : (
-              <View style={[styles.avatarInitial, { backgroundColor: colors.avatarBg }]}>
+              <View style={[styles.avatarInitial, { backgroundColor: colors.avatarBg, borderWidth: 2, borderColor: colors.primary }]}>
                 <Ionicons name="person" size={48} color={colors.avatarIcon} />
               </View>
             )}
